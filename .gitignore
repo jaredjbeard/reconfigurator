@@ -1,0 +1,7 @@
+
+build/*
+__pycache__/
+reconfigurator.egg-info/
+reconfigurator_jaredjbeard.egg-info/
+dist/
+.pypirc
