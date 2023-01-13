@@ -15,6 +15,26 @@ sys.path.append(parent)
 
 import json
 
+def merge_trials():
+    
+    #performs merge append
+    #iterates over defaults and merges them as list
+    pass
+    
+def expand_list():
+    pass
+
+def expand_generator():
+    pass
+
+def condense_trials():
+    pass
+
+def merge_append():
+    # add this to nestifydict
+    #merges, but if element is an iterable, they are appended
+
+
 def update( var, val, update_all : bool = False, core_file : str = current + "/core.json",):
     """
     Update one or more config values
