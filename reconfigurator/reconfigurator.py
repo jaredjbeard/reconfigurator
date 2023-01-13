@@ -13,26 +13,64 @@ current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 
+from copy import deepcopy
 import json
+import nestifydict as nd
 
-def merge_trials():
+__all__ = ["merge_configs", "merge_configs_from_file"]
+
+def merge_configs(configs : list):
+    """
+    Accespts a list of ocnfiguration files and merges them into a single file
+
+    :param source_files: (list(str)) Files to merge, if priority matters, later defaults will overwrite earlier ones.
+    :return: merged configuration
+    """
+    merged_config = deepcopy(configs[0])
+    configs = configs[1:len(configs)]
+    for c in configs:
+        merged_config = nd.merge(merged_config,c,True)
+
+    for el in merged_config:
+        if isinstance(merged_config[el], list):
+            temp_default = {}
+            temp_list = []
+            for d in merged_config[el]:
+                if "default" in d and d["default"]:
+                    temp_default = nd.merge(temp_default,d)
+                else:
+                    temp_list.append(deepcopy(d))
+            merged_config[el] = temp_list.insert(0,temp_default)
+
+    return merged_config
+
+def merge_configs_from_file(source_files : list, destination_file : str):
+    """
+    Accespts a list of ocnfiguration files and merges them into a single file
+
+    :param source_files: (list(str)) Files to merge, if priority matters, later defaults will overwrite earlier ones.
+    :param destionation_file: (str) Where to save merged configuration
+    """
+    configs = []
+    for fp in source_files:
+        with open(fp, 'rb') as f:
+            configs.append(json.load(f))
     
-    #performs merge append
-    #iterates over defaults and merges them as list
-    pass
+    with open(destination_file, "wb") as f:
+        json.dump(merge_configs(configs), f)
+
     
-def expand_list():
+def expand_to_list():
     pass
 
-def expand_generator():
+def expand_as_generator():
     pass
 
 def condense_trials():
     pass
 
-def merge_append():
-    # add this to nestifydict
-    #merges, but if element is an iterable, they are appended
+def compress_to_dict():
+    pass
 
 
 def update( var, val, update_all : bool = False, core_file : str = current + "/core.json",):
