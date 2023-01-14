@@ -19,6 +19,8 @@ import nestifydict as nd
 
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
+RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
+
 def merge_configs(configs : list):
     """
     Accepts a list of configuration files and merges them into a single file
@@ -29,17 +31,6 @@ def merge_configs(configs : list):
     merged_config = {}
     for c in configs:
         merged_config = nd.merge(merged_config,c,True)
-
-    for el in merged_config:
-        if isinstance(merged_config[el], list):
-            temp_default = {"default": True}
-            temp_list = []
-            for d in merged_config[el]:
-                if "default" in d and d["default"]:
-                    temp_default = nd.merge(temp_default,d)
-                else:
-                    temp_list.append(deepcopy(d))
-            merged_config[el] = temp_list.insert(0,temp_default)
 
     return merged_config
 
@@ -73,11 +64,64 @@ def expand(config : dict):
     
     :param config: (dict) configuration file
     """
+    default_config = {}
+    merge_config = {}
+    sample_control_config = []
+    values_config = []
+    n_samples = 1
+    
+    if "default" in config:
+        default_config = config.pop("default")      
+    if "merge" in config:
+        merge_config = config.pop("merge")
+    if "sample_control" in config:
+        sample_control_config = config.pop("sample_control")      
+    if "values" in config:
+        values_config = config.pop("values")
+    if "n_samples" in config:
+        n_samples = config.pop("n_samples")
+        
+    # default_config = sample_config(sample_control, "default")
+        #sample each control
+        # add to corresponding merge in default
+        # add values to default
+        
+    # for el in config
+        #config[el] = distribute defaults(config[el],default_config)
+            # add sample to sample control??
+            #? if not isinstrance(config[el], list):
+                #?????
+            #? else:
+                #? apply defaults to each el in list
+        
+    # for i in n_samples:  
+        # config_list = values_config
+        # for el in config:
+            # if not isinstance(config[el], list):
+                # yield expand()
+            # else
+                # for itm in config[el]:
+                    #yield itm
+        
     config = distribute_defaults(config)
+    
+    
+    return config
     
     
     
 def distribute_defaults(config : dict):
+    """
+    Distributes default settings to constituent members
+    
+    :param config: (dict) configuration file
+    """
+    if "default" in config:
+        config_default = config.pop("default")
+        for el in config:
+            
+            
+    
     
     pass
 

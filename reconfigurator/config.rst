@@ -55,6 +55,48 @@ For example:
 
 Talk about merge!
 
+#can have default variables but not default directives!
+    So individual variables and sampled ones can be passed in.
+    However, merge, number of copies cannot. 
+        Number of copies will spit out n copies of the same thing
+        Whereas control will add defaults to all
+## Flags
+"merge":
+{
+    "combo" : [[], []]
+    "pairwise" : [[], []]
+    "parallel" : [[], []]
+},
+"sample-control":
+    {
+        [{}, ...] # Sample all variables. Add them to pairwise. Add them to source destination
+            #not supporting with combo or pairwise as dimensions are weird and behavior can't be guaranteed
+            # Then n-copies can gerenate more of them.
+    }
+"default": 
+{
+    "default": True
+    
+    "n_copies": <#>
+    "sample": [{}, {}]
+    "var": ...,
+    "var2": ...
+}
+"values": []
+
+Sample dicts should look like:
+{
+    "key": ["", ""]
+    "merge": "<merge type>"
+    "params":
+}
+If key contains all, then it will be added to all sub levels
+
+# Expand will push 
+Assume that shared 
+
+#Alg will check for values, merge, default or sample
+
 A configuration file will consist of a dictionary containing the following elements:
     - "default": (optional) default parameters for all algorithms or environments under test. These will be overwritten by more specific described below.
 
