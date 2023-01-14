@@ -27,12 +27,14 @@ At a fundamental level, configurations are organized into groups each containing
 ```
 
 This is done so that groups can be integrated as desired to generate a single configuration. 
-By default, groups are merged by generating combinations of the elements in each group.
-Users can make this explicit by using a "merge" key which has two possible values.
+By default, groups are stitchd by generating combinations of the elements in each group.
+Users can make this explicit by using a "stitch" key which has two possible values.
     - "combo" which generations combinations
     - "pairwise" which will stitch together elements from each as pairs. (A blank or default will be used if they are of different lengths)
-Following a merge, elements will be stitched together using their group name as a dictionary key for each configuration.
+    - "parallel" which will treat configured groups as unrelated 
+Following a stitch, elements will be stitched together using their group name as a dictionary key for each configuration.
 For example:
+
 ```
 {
     {
@@ -50,6 +52,8 @@ For example:
     ...
 }
 ```
+
+Talk about merge!
 
 A configuration file will consist of a dictionary containing the following elements:
     - "default": (optional) default parameters for all algorithms or environments under test. These will be overwritten by more specific described below.

@@ -21,19 +21,18 @@ __all__ = ["merge_configs", "merge_configs_from_file"]
 
 def merge_configs(configs : list):
     """
-    Accespts a list of ocnfiguration files and merges them into a single file
+    Accepts a list of configuration files and merges them into a single file
 
-    :param source_files: (list(str)) Files to merge, if priority matters, later defaults will overwrite earlier ones.
+    :param source_files: (list(str)) Files to merge, if priority matters, later defaults in each group will overwrite earlier ones.
     :return: merged configuration
     """
-    merged_config = deepcopy(configs[0])
-    configs = configs[1:len(configs)]
+    merged_config = {}
     for c in configs:
         merged_config = nd.merge(merged_config,c,True)
 
     for el in merged_config:
         if isinstance(merged_config[el], list):
-            temp_default = {}
+            temp_default = {"default": True}
             temp_list = []
             for d in merged_config[el]:
                 if "default" in d and d["default"]:
@@ -46,7 +45,7 @@ def merge_configs(configs : list):
 
 def merge_configs_from_file(source_files : list, destination_file : str):
     """
-    Accespts a list of ocnfiguration files and merges them into a single file
+    Accepts a list of configuration files and merges them into a single file
 
     :param source_files: (list(str)) Files to merge, if priority matters, later defaults will overwrite earlier ones.
     :param destionation_file: (str) Where to save merged configuration
@@ -58,12 +57,51 @@ def merge_configs_from_file(source_files : list, destination_file : str):
     
     with open(destination_file, "wb") as f:
         json.dump(merge_configs(configs), f)
-
     
-def expand_to_list():
+def expand_to_list(config : dict):
+    
+    config = expand(config)
+    
+
+def expand_as_generator(config : dict):
+    
+    config = expand(config)
+
+def expand(config : dict):
+    """
+    Performs expansion behaviors common to list and generator expansions
+    
+    :param config: (dict) configuration file
+    """
+    config = distribute_defaults(config)
+    
+def distribute_defaults(config : dict):
     pass
 
-def expand_as_generator():
+def stitch(configs : dict):
+    """
+    Integrates all groups of configurations.
+    By default, groups are stitchd by generating combinations of the elements in each group.
+    Users can make this explicit by using a "stitch" key which has two possible values.
+        - "combo" which generations combinations
+        - "pairwise" which will stitch together elements from each as pairs. (A blank or default will be used if they are of different lengths)
+        - "parallel" which will treat configured groups as unrelated 
+    Following a stitch, elements will be stitched together using their group name as a dictionary key for each configuration.
+
+    :param configs: (dict) list of configurations to stitch
+    :return: (list(dict)) list of configurations 
+    """
+    
+    
+    pass
+
+def combo_stitch():
+    pass
+
+def pairwise_stitch():
+    pass
+
+def parallel_stitch():
     pass
 
 def condense_trials():
