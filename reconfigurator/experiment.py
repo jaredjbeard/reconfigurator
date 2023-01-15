@@ -18,11 +18,16 @@ import json
 from collections.abc import Iterable
 import nestifydict as nd
 
+import ABC
+from dataclasses import dataclass
+
 import sampler
+import stitch
 
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
 RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
+
 
 def merge_configs(configs : list):
     """
@@ -88,20 +93,11 @@ def expand_as_generator(config : dict):
             
         stitch_config = config.pop("stitch")
         
-        #push defaults
-        
-        sampler.sample_all(sample_control_config, default_config)
-        # check sample
-        # To sample all
-            # for each el in sample control config
-            # sample from params
-            # if "all" is not a key, update,
-            # else for each el in configs, 
-            #   update with first key replaced
-            #   then inside if they contain "stitch" add in appropriate manner
+        config = sample_control(sample_control_config, default_config)
+
+        config = push_default(default_config)
             
-        
- 
+            
         # default_config = sample_config(sample_control, "default")
             #sample each control
             # add to corresponding stitch in default
@@ -138,7 +134,32 @@ def expand_as_generator(config : dict):
                 # else
                     # for itm in config[el]:
                         #yield itm
+
+def sample_control(sample_config : dict, default_config : dict):
+    """
+    Samples control variables and adds them to subdictionary defaults
+
+    :param sample_config: (dict) Variable sample declarations
+    :param default_config: (dict) Default config to write sampled values to
+    """
+    sampler.sample_all(sample_config, default_config)
+    if "stitch" not in default_config:
+        default_config["stitch"] = stitch.Stitch()
+    elif isinstance(default_config["stitch"], stitch.Stitch):
+        default_config["stitch"] = stitch.Stitch(default_config["stitch"])
+
+
+    for el in sample_config:
+        #adds a stitch to the buffer
+        default_config["stitch"].add_stitch(sample_config[el]["stitch"], sample_config[el]["key"])
+
+    default_config.compile_stitch("unordered")
     
+
+    #Get sample keys and and add them to "stitch " as combo
+            # else for each el in configs, 
+            #   update with first key replaced
+            #   then inside if they contain "stitch" add in appropriate manner
     
     
 def distribute_defaults(config : dict):

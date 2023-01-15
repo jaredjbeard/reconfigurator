@@ -61,7 +61,7 @@ def sample_all(config : dict, output : dict):
                 config[el]["key"] = output.keys()
         keys = nd.list_keys(config[el],"key")
         
-        # Finds and overwrites params specified by other variables
+        # Finds and overwrites params specified by other variables ...?
         for param in config[el]:
             if isinstance(config[el][param],list):
                 config[el][param] = deepcopy(nd.recursive_get(d,nd.find_key(config[el][param])))
