@@ -55,18 +55,20 @@ def sample_all(config : dict, output : dict):
     """
     d = {"output": output, "config": config}
     for el in config:
-        key = nd.find_key(output,el)
+        s = sample(config[el])
+        for itm in config[el]["key"]:
+            if (not isinstance(itm,list)) and itm == "all":
+                config[el]["key"] = output.keys()
+        keys = nd.list_keys(config[el],"key")
         
         # Finds and overwrites params specified by other variables
-        params = nd.recursive_get(d,key)
-        for param in params:
-            if isinstance(params[param],list):
-                d[key + params] = deepcopy(nd.recursive_get(d,nd.find_key(params[param])))
-        
-        s = sample(key, d)
-        if s is not None:     
-            nd.recursive_set(output,["output"] + key[1:len(key)],s)
+        for param in config[el]:
+            if isinstance(config[el][param],list):
+                config[el][param] = deepcopy(nd.recursive_get(d,nd.find_key(config[el][param])))
     
+        for key in keys:
+            nd.recursive_set(output,key,s)
+
 def sample(sample_params : dict):
     """
     Samples variables using specification

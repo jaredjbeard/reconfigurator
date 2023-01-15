@@ -53,7 +53,10 @@ For example:
 }
 ```
 
-Talk about merge!
+Talk about stitch!-> do a list, only things in list will be added (add flag to just do everythiing unlisted too?)
+    Treat list for in parallel [],
+    Then set for pairwise {}
+    And tuple for combo ()
 
 #can have default variables but not default directives!
     So individual variables and sampled ones can be passed in.
