@@ -90,12 +90,8 @@ def expand_as_generator(config : dict):
         
         #push defaults
         
-        for sample in sample_control_config:
-            if sample["key"][0] == "all":
-                for el in config:
-                    temp_key = deepcopy(sample["key"])
-                    temp_key[0] = el
-                    sampler.sample()
+        sampler.sample_all(sample_control_config, default_config)
+        # check sample
         # To sample all
             # for each el in sample control config
             # sample from params
@@ -104,7 +100,7 @@ def expand_as_generator(config : dict):
             #   update with first key replaced
             #   then inside if they contain "stitch" add in appropriate manner
             
-        sampler.sample_all(sample_control_config, default_config)
+        
  
         # default_config = sample_config(sample_control, "default")
             #sample each control
