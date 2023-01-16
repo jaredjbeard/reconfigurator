@@ -104,13 +104,17 @@ def push_default(default_config: dict, config : dict):
 
 def stitch(stitch_config : dict, configs : dict):
     """
-    Will stitch together expanded configurations.
+    Generator that will stitch together expanded configurations.
     
     Stitch should be specified as a list. If the element encountered is 
     - a tuple -> the product of all elements in tuple will be expanded
     - a list  -> a pairwise arrangement of elements will be expanded
     - a dict  -> this will be expanded directly
     - else    -> the element will be yielded
+    
+    :param stitch_config: (list) how to stitch together configurations
+    :param config: (dict) dense configuration
+    :return: yields all combinations. 
     """
     for el in stitch_config:
         if isinstance(el,tuple) or isinstance(el,list):
