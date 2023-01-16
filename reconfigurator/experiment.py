@@ -15,14 +15,11 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 import json
-from collections.abc import Iterable
 import nestifydict as nd
 
-import ABC
-from dataclasses import dataclass
+import itertools
 
 import sampler
-import stitch
 
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
@@ -74,138 +71,69 @@ def expand_as_generator(config : dict):
     :param config: (dict) dense configuration file
     :return: (dict) a single configuration
     """
-    if "merge" not in config:
-        yield config
+    default_config = {}
+    if "default" in config:
+            default_config = config.pop("default")   
+    config = push_default(default_config)
+    
+    n_copies = 1
+    if "n_copies" in config:
+            n_copies = config.pop("n_copies")
+    
+    if "stitch" not in config:
+        for i in range(n_copies):
+            yield config
     else:
-        default_config = {}
-        sample_control_config = []
-        values_config = []
-        n_samples = 1
-        
-        if "default" in config:
-            default_config = config.pop("default")      
-        if "sample_control" in config:
-            sample_control_config = config.pop("sample_control")      
-        if "values" in config:
-            values_config = config.pop("values")
-        if "n_samples" in config:
-            n_samples = config.pop("n_samples")
-            
         stitch_config = config.pop("stitch")
         
-        config = sample_control(sample_control_config, default_config)
+        for i in range(n_copies):
+            for el in stitch(stitch_config, config):
+                yield el          
 
-        config = push_default(default_config)
-            
-            
-        # default_config = sample_config(sample_control, "default")
-            #sample each control
-            # add to corresponding stitch in default
-            # add values to default
-        
-        for i in n_samples:
-            for el in stitch_config: 
-                if isinstance(el,set):
-                    pass
-                elif isinstance(el,tuple):
-                    pass
-                elif isinstance(el,list):
-                    for itm in stitch_config[el]:
-                        #distribute
-                        # sample internals
-                        yield expand_as_generator(stitch_config[el])
-                else:
-                    #distribute defaults
-                    #sample internals
-                    yield expand_as_generator(stitch_config[el])
-        # for el in config
-            #config[el] = distribute defaults(config[el],default_config)
-                # add sample to sample control??
-                #? if not isinstrance(config[el], list):
-                    #?????
-                #? else:
-                    #? apply defaults to each el in list
-            
-        # for i in n_samples:  
-            # config_list = values_config
-            # for el in config:
-                # if not isinstance(config[el], list):
-                    # yield expand()
-                # else
-                    # for itm in config[el]:
-                        #yield itm
-
-def sample_control(sample_config : dict, default_config : dict):
+def push_default(default_config: dict, config : dict):
     """
-    Samples control variables and adds them to subdictionary defaults
-
-    :param sample_config: (dict) Variable sample declarations
-    :param default_config: (dict) Default config to write sampled values to
-    """
-    sampler.sample_all(sample_config, default_config)
-    if "stitch" not in default_config:
-        default_config["stitch"] = stitch.Stitch()
-    elif isinstance(default_config["stitch"], stitch.Stitch):
-        default_config["stitch"] = stitch.Stitch(default_config["stitch"])
-
-
-    for el in sample_config:
-        #adds a stitch to the buffer
-        default_config["stitch"].add_stitch(sample_config[el]["stitch"], sample_config[el]["key"])
-
-    default_config.compile_stitch("unordered")
+    Distributes default settings to dictionary
     
-
-    #Get sample keys and and add them to "stitch " as combo
-            # else for each el in configs, 
-            #   update with first key replaced
-            #   then inside if they contain "stitch" add in appropriate manner
-    
-    
-def distribute_defaults(config : dict):
-    """
-    Distributes default settings to constituent members
-    
+    :param default_config: (dict) configuration file defaults
     :param config: (dict) configuration file
     """
-    if "default" in config:
-        config_default = config.pop("default")
-        for el in config:
-            
-            
-    
-    
-    pass
+    if "sample" in default_config:
+        s = default_config.pop("sample")
+        default_config = sampler.sample_all(s, default_config)
+    nd.merge(default_config,config)        
 
-def stitch(configs : dict):
+def stitch(stitch_config : dict, configs : dict):
     """
-    Integrates all groups of configurations.
-    By default, groups are stitchd by generating combinations of the elements in each group.
-    Users can make this explicit by using a "stitch" key which has two possible values.
-        - "combo" which generations combinations
-        - "pairwise" which will stitch together elements from each as pairs. (A blank or default will be used if they are of different lengths)
-        - "parallel" which will treat configured groups as unrelated 
-    Following a stitch, elements will be stitched together using their group name as a dictionary key for each configuration.
-
-    :param configs: (dict) list of configurations to stitch
-    :return: (list(dict)) list of configurations 
+    Will stitch together expanded configurations.
+    
+    Stitch should be specified as a list. If the element encountered is 
+    - a tuple -> the product of all elements in tuple will be expanded
+    - a list  -> a pairwise arrangement of elements will be expanded
+    - a dict  -> this will be expanded directly
+    - else    -> the element will be yielded
     """
-    
-    
-    pass
+    for el in stitch_config:
+        if isinstance(el,tuple) or isinstance(el,list):
+            d_flat = nd.unstructure(configs)
 
-def combo_stitch():
-    pass
+            d_filter = {}
+            for itm in el:
+                d_filter[itm] = d_flat[itm]
+                
+            if isinstance(el,tuple):
+                gen = itertools.product
+            else:
+                gen = itertools.pairwise
 
-def pairwise_stitch():
-    pass
-
-def parallel_stitch():
-    pass
-
-def condense_trials():
-    pass
-
-def compress_to_dict():
-    pass
+            for config in gen(*d_filter.values()):
+                for param in config:
+                    temp = dict(zip(deepcopy(d_filter.keys()), deepcopy(param)))
+                    temp = nd.merge(d_flat,temp)
+                    
+                    yield expand_as_generator(nd.structure(temp,configs))
+                
+        elif isinstance(config[el],dict):
+            yield expand_as_generator(config[el])
+        else:
+            yield config[el]
 
