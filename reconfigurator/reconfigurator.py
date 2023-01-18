@@ -1,6 +1,21 @@
 #!/usr/bin/python
 """
-This script is intended to set default, visualize, and update decision making configuration.
+==============
+Reconfigurator
+==============
+
+Key functionalities are to 
+- Overwrite configs with replace
+- Merge a series of config files
+- Update variables in a configuration
+- Print a configuration
+
+Command Line Interface
+######################
+The Reconfigurator command line interface is installed locally to user bin <insert details>
+
+The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
+
 """
 __license__ = "BSD-3"
 __docformat__ = 'reStructuredText'

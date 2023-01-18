@@ -1,5 +1,5 @@
 =======================
-Intro to Reconfigurator
+Reconfigurator Markdown
 =======================
 
 Reconfigurator is a tool for setting up and modify configuration files.
