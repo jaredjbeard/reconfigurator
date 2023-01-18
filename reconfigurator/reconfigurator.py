@@ -28,7 +28,7 @@ current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 
-import json
+import json, toml, yaml
 import argparse
 
 import nestifydict as nd
@@ -36,6 +36,7 @@ import nestifydict as nd
 RECONFIGURATOR_CONFIG_FILE = "config.json"
 
 __all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config"]
+
 
 def replace_file(sink_file : str, source_file : str):
     """
@@ -47,10 +48,10 @@ def replace_file(sink_file : str, source_file : str):
     with open(RECONFIGURATOR_CONFIG_FILE, "rb") as f:
         config = json.load(f)
         abs_path = config["abs_path"]
-    with open(abs_path + source_file, "rb") as source:
-        params = json.load(source)
-    with open(abs_path + sink_file, "w+") as core_f:
-        json.dump(params, core_f, indent = 4)
+    source_file = abs_path + source_file
+    sink_file = abs_path + sink_file
+    params = read_file(source_file)
+    write_file(sink_file, params)
         
 def merge_file(source_files : list, do_append : bool = False):
     """
@@ -61,11 +62,11 @@ def merge_file(source_files : list, do_append : bool = False):
     """
     configs = []
     for fp in source_files:
-        with open(fp, 'rb') as f:
-            configs.append(json.load(f))
-    
-    with open(source_files[len(source_files)], "wb") as f:
-        json.dump(nd.merge_all(configs, do_append), f)
+        configs.append(read_file(fp))
+    sink_file = source_files[len(source_files)]
+    params = nd.merge_all(configs, do_append)
+    write_file(sink_file, params)
+
         
 def update_file(var, val, file : str, update_all : bool = False):
     """
@@ -74,13 +75,16 @@ def update_file(var, val, file : str, update_all : bool = False):
     :param var: () parameter to update
     :param val: () new value of parameter
     :param file: (str) location of file
-    :param update_all: (bool) if true, accepts var as a list of keys, *defualt*: False
+    :param update_all: (bool) if true, accepts var as a list of keys, *default*: False
     """
     with open(RECONFIGURATOR_CONFIG_FILE, "rb") as f:
         config = json.load(f)
         abs_path = config["abs_path"]
-    with open(abs_path + file, 'r+') as f: 
-        json.dump(update(var, val, json.load(f), update_all))  
+    file = abs_path + file
+    params = read_file(file)
+    params = update(var, val, params, update_all)
+    write_file(file, params)
+
         
 def update(var, val, config : dict, update_all : bool = False):
     """
@@ -109,10 +113,9 @@ def print_config_file(file : str):
     with open(RECONFIGURATOR_CONFIG_FILE, "rb") as f:
         config = json.load(f)
         abs_path = config["abs_path"]
-    with open(abs_path + file, "rb") as f:
-        params = json.load(f)
-        print_config(params)
-
+    file = abs_path + file
+    params = read_file(file)
+    print_config(params)
             
 def print_config(config : dict): 
     """
@@ -145,6 +148,42 @@ def reset_abs_path():
     Resets the absolute path for config files to relative path
     """ 
     set_abs_path()
+
+def read_file(source_file: str) -> str:
+    """
+    Reads the content of a file
+
+    :param source_file: (str) location of file to read from
+    :return : (str) content of file
+    """
+    file_ext = source_file.split(".")[-1]
+    with open(source_file, "rb") as f:
+        if file_ext == "yaml":
+            return yaml.safe_load(f)
+        elif file_ext == "json":
+            return json.load(f)
+        elif file_ext == "toml":
+            return toml.load(f)
+        elif file_ext == "py" or file_ext == "txt":
+            return f.read()
+
+def write_file(sink_file: str, params: str):
+    """
+    Writes the content to a file
+
+    :param sink_file: (str) location of new to write into
+    :param params : (str) content to write
+    """
+    file_ext = sink_file.split(".")[-1]
+    with open(sink_file, "w+") as f:
+        if file_ext == "yaml":
+            yaml.dump(params, f)
+        elif file_ext == "json":
+            json.dump(params, f, indent = 4)
+        elif file_ext == "toml":
+            toml.dump(params, f)
+        elif file_ext == "py" or file_ext == "txt":
+            f.write(params)
 
 if __name__=='__main__':  
     
