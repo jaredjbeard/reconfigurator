@@ -164,8 +164,6 @@ def read_file(source_file: str) -> str:
             return json.load(f)
         elif file_ext == "toml":
             return toml.load(f)
-        elif file_ext == "py" or file_ext == "txt":
-            return f.read()
 
 def write_file(sink_file: str, params: str):
     """
@@ -182,8 +180,6 @@ def write_file(sink_file: str, params: str):
             json.dump(params, f, indent = 4)
         elif file_ext == "toml":
             toml.dump(params, f)
-        elif file_ext == "py" or file_ext == "txt":
-            f.write(params)
 
 if __name__=='__main__':  
     
