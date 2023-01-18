@@ -24,35 +24,6 @@ import sampler
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
 RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
-
-
-def merge_configs(configs : list):
-    """
-    Accepts a list of configuration files and merges them into a single file
-
-    :param source_files: (list(str)) Files to merge, if priority matters, later defaults in each group will overwrite earlier ones.
-    :return: merged configuration
-    """
-    merged_config = {}
-    for c in configs:
-        merged_config = nd.merge(merged_config,c,True)
-
-    return merged_config
-
-def merge_configs_from_file(source_files : list, destination_file : str):
-    """
-    Accepts a list of configuration files and merges them into a single file
-
-    :param source_files: (list(str)) Files to merge, if priority matters, later defaults will overwrite earlier ones.
-    :param destionation_file: (str) Where to save merged configuration
-    """
-    configs = []
-    for fp in source_files:
-        with open(fp, 'rb') as f:
-            configs.append(json.load(f))
-    
-    with open(destination_file, "wb") as f:
-        json.dump(merge_configs(configs), f)
     
 def expand_to_list(config : dict):
     """
