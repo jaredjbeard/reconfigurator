@@ -15,27 +15,11 @@ sys.path.append(parent)
 
 import json
 
-__all__ = ["update", "reset_core", "initialize_core", "print_config"]
+import nestifydict as nd
 
-def update( var, val, update_all : bool = False, core_file : str = current + "/core.json",):
-    """
-    Update one or more config values
+__all__ = ["replace_file", "update_file", "update", "print_config_file", "print_config"]
 
-    :param var: () parameter to update
-    :param val: () new value of parameter
-    :param update_all: (bool) if true, accepts var as a list of keys, *defualt*: False
-    :param core_file: (str) location of core to overwrite, *default*: current + "/core.json"
-    """
-    with (core_file, 'r+') as f:
-        data = json.load(f)
-        if update_all:
-            for key, v in zip(var, val):
-                data[key] = v  
-        else:
-            data[var] = val
-        json.dump(data)  
-        
-def reset_core(core_file : str = current + "/core.json", default_file : str = current + "/core_default.json"):
+def replace_file(core_file : str, default_file : str):
     """
     Resets core configuration to defaults
 
@@ -47,64 +31,72 @@ def reset_core(core_file : str = current + "/core.json", default_file : str = cu
     with open(core_file, "w+") as core_f:
         json.dump(params, core_f, indent = 4)
         
-def initialize_core(path : str = current):
+def update_file(var, val, file : str, update_all : bool = False):
     """
-    Initializes core variables from path
+    Update one or more config values in a file
 
-    :param path: (str) where to set initial values
+    :param var: () parameter to update
+    :param val: () new value of parameter
+    :param file: (str) location of file
+    :param update_all: (bool) if true, accepts var as a list of keys, *defualt*: False
     """
-    base_file = path + "core_default_base.json"
-    default_file = path + "core_default.json"
-    core_file = path + "core.json"
-    
-    with open(base_file, "rb") as default_f:
-        params = json.load(default_f)
+    with (file, 'r+') as f: 
+        json.dump(update(var, val, json.load(f), update_all))  
         
-    for el in params.keys():
-        if isinstance(el,str) and "file" in el:
-            params[el] = path + params[el]
-            
-    with open(default_file, "w+") as default_f:
-        json.dump(params, default_f, indent = 4)
-    
-    reset_core(core_file, default_file)
-          
-def print_config(core_file : str= current + "/core.json"): 
+def update(var, val, config : dict, update_all : bool = False):
+    """
+    Update one or more config values in a file
+
+    :param var: () parameter to update
+    :param val: () new value of parameter
+    :param config: (dict) configuration
+    :param update_all: (bool) if true, accepts var as a list of keys, *defualt*: False
+    """
+    if update_all:
+        for key, v in zip(var, val):
+            nd.recursive_set(key,v)
+    elif isinstance(var,list):
+        nd.recursive_set(var,val)
+    else:
+        config[var] = val 
+    return config
+
+def print_config_file(file : str): 
     """
     Prints configuration file settings
     
-    :param file_name: (str) Location of configuration params, *default*: current + "/core.json"
+    :param file: (str) Location of configuration params
+    """
+    with open(file, "rb") as f:
+        params = json.load(f)
+        print_config(params)
+
+            
+def print_config(config : dict): 
+    """
+    Prints configuration
+    
+    :param config: (dict)configuration params
     """
     print("Getting Decision Making Toolbox Configuration")
-    with open(core_file, "rb") as f:
-        params = json.load(f)
-        len_key = 0
-        for key in params.keys():
-            if len(str(key)) > len_key:
-                len_key = len(str(key))
-        len_key += 2
-        for key in params.keys():
-            print(f'{key:-<{len_key}} -> ' + str(params[key]))     
+    len_key = 0
+    for key in config.keys():
+        if len(str(key)) > len_key:
+            len_key = len(str(key))
+    len_key += 2
+    for key in config.keys():
+        print(f'{key:-<{len_key}} -> ' + str(config[key]))     
 
-if __name__=='__main__':
-    file_name = current + "/core.json"
-    print(file_name)
-    default_file_name = current + "/core_default.json"
+if __name__=='__main__':  
     
-    if sys.argv[1] == "default":
-        reset_core(file_name, default_file_name)
+    if sys.argv[1] == "-p" or sys.argv[1] == "--print":
+        print_config_file(sys.argv[2])
         
-    elif sys.argv[1] == "update":
-        i = 2
+    elif sys.argv[1] == "-u":
+        i = 3
         while i <= len(sys.argv) -2:
-            update(sys.argv[i], sys.argv[i+1], False, file_name)
+            update(sys.argv[i], sys.argv[i+1], False, sys.argv[2])
             i += 2
-            
-    elif sys.argv[1] == "init":
-        initialize_core(current)
-        
-    elif sys.argv[1] == "print" or len(sys.argv) < 2:
-        print_config(file_name)
         
     else:
         print("Invalid Configuation Directive")
