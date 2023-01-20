@@ -12,7 +12,8 @@ It has support for the following:
 Reconfigurator CLI
 ##################
 
-Description and link to reconfigurator -> Should explain in its own file then link to source combined
+To add reconfigurator command line interface in Linux, navigate to `/home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/reconfigurator/scripts/`.
+Then run `sh add_cli.sh`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
 
 Markdown
 ########
