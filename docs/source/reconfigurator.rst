@@ -1,11 +1,11 @@
-reconfigurator package
-======================
+Reconfigurator
+==============
 
 Submodules
 ----------
 
-reconfigurator.reconfigurator module
-------------------------------------
+Reconfigurator module
+---------------------
 
 .. automodule:: reconfigurator.reconfigurator
    :members:
