@@ -2,7 +2,7 @@
 This package provides tools for reconfiguring files, markdown for sampling and generating configuration files. 
 
 
-Please see our [Documentation](https://reconfigurator.readthedocs.io/en/latest/intro.html), 
+Please see our [Documentation](https://reconfigurator.readthedocs.io/en/latest/introduction.html), 
 [Github source code](https://github.com/jaredjbeard/reconfigurator), 
 and install from [PyPi](https://pypi.org/project/reconfigurator/)
 
