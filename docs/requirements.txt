@@ -1,7 +1,4 @@
 sphinx==5.1.1
 sphinx-rtd-theme
 nestifydict
-json
-toml
-yaml
 -e.
