@@ -12,8 +12,6 @@ Key functionalities are to
 
 Command Line Interface
 ######################
-The Reconfigurator command line interface is installed locally to user bin <insert details>
-
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 
 """
@@ -121,7 +119,7 @@ def print_config(config : dict):
     """
     Prints configuration
     
-    :param config: (dict)configuration params
+    :param config: (dict) Configuration params
     """
     print("Getting Decision Making Toolbox Configuration")
     len_key = 0
