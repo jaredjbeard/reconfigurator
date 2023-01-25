@@ -6,7 +6,6 @@ __license__ = "BSD-3"
 __docformat__ = 'reStructuredText'
 __author__ = "Jared Beard"
 
-from copy import deepcopy
 import sys
 import os
 
@@ -14,12 +13,13 @@ current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 
-import json
+import itertools
+from collections.abc import Iterable
+from copy import deepcopy
+
 import nestifydict as nd
 
-import itertools
-
-import sampler
+import reconfigurator.sample as sample
 
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
@@ -70,7 +70,7 @@ def push_default(default_config: dict, config : dict):
     """
     if "sample" in default_config:
         s = default_config.pop("sample")
-        default_config = sampler.sample_all(s, default_config)
+        default_config = sample.sample_all(s, default_config)
     nd.merge(default_config,config)        
 
 def stitch(stitch_config : dict, configs : dict):
@@ -107,8 +107,14 @@ def stitch(stitch_config : dict, configs : dict):
                     
                     yield expand_as_generator(nd.structure(temp,configs))
                 
-        elif isinstance(config[el],dict):
+        elif isinstance(configs[el],dict):
             yield expand_as_generator(config[el])
+        elif isinstance(configs[el],Iterable):
+            for itm in configs[el]:
+                if isinstance(itm,dict):
+                    yield expand_as_generator(itm)
+                else:
+                    yield itm
         else:
-            yield config[el]
+            yield configs[el]
 

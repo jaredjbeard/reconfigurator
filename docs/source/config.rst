@@ -1,6 +1,6 @@
-=======================
-Reconfigurator Markdown
-=======================
+=====================
+Reconfigurator Markup
+=====================
 
 Reconfigurator is a tool for setting up and modify configuration files.
 It has support for the following:
@@ -15,25 +15,51 @@ On terminology, please note a *group* is a type of configuration, and a *configu
 Basic Configuration
 ###################
 
-At a fundamental level, configurations are organized into groups each containing a list of configurations. 
+At a fundamental level, configurations are organized into groups each containing a configuration or list of configurations. 
+What's more, these configurations can be nested, so any markup described below will be called recursively whenever a dictionary is encountered (assuming it contains markdown directives described here).
 
 ```
 {
-    "group1": [ {}, {}, ...], 
+    "group1": <val>, 
     "randomGroup name": [ {}, {}, ...], 
     371: [ {}, {}, ...], 
     ...
 }
 ```
 
-This is done so that groups can be integrated as desired to generate a single configuration. 
-By default, groups are stitchd by generating combinations of the elements in each group.
-Users can make this explicit by using a "stitch" key which has two possible values.
-    - "combo" which generations combinations
-    - "pairwise" which will stitch together elements from each as pairs. (A blank or default will be used if they are of different lengths)
-    - "parallel" which will treat configured groups as unrelated 
-Following a stitch, elements will be stitched together using their group name as a dictionary key for each configuration.
-For example:
+Stiching
+********
+
+Stitching is the process of combining configurations from different groups. 
+To define a stitch, users must include a key called stitch which contains the name of variables we want to stitch/compose into a set of configurations.
+Stitch will be parse as follows:
+    - a tuple: stitch variables as the component product (combination of the elements in the variable)
+    - a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
+    - a key: parse variable sequentially. If the values contained in the member 
+        - a dict: elements will be expanded as a normal
+        - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
+        - any other type: elements will be returned as is 
+
+Product Example
+---------------
+
+Pairwise Example
+----------------
+
+Sequential Examples
+-------------------
+
+Dictionary
+^^^^^^^^^^
+
+Other Iterables
+^^^^^^^^^^^^^^^
+
+Other Types
+^^^^^^^^^^^
+
+Sample Configuration
+####################
 
 ```
 {
