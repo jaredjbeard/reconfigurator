@@ -1,4 +1,7 @@
 # reconfigurator
+
+[![Downloads](https://static.pepy.tech/badge/reconfigurator)](https://pepy.tech/project/reconfigurator)
+
 This package provides tools for reconfiguring files, markdown for sampling and generating configuration files. 
 
 
