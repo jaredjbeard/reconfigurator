@@ -12,23 +12,23 @@ def test_expand_to_list():
         "stitch": [
     #         ("a", "b"),
     #         ["c", "d"], 
-            # "e", 
-            "f",
+            "e", 
+            # "f",
             # "g"
         ],
     #     "c": 3,
     #     "d": 4,
-        # "e": 
-        # {
-        #     "default": {
-        #         "e1": 5,
-        #         "e2": [6,7]
-        #     },
-        #     "n_copies": 2,
-        #     "stitch": ["e2"]
-        # },
-        "f": [8,{"h":9}],
-        "g": 10
+        "e": 
+        {
+            "default": {
+                "e1": 5,
+                "e2": [6,7]
+            },
+            "n_copies": 2,
+            "stitch": ["e2"]
+        },
+        # "f": [8,{"h":9}, [10,11], 12],
+        "g": 13
     }
     for el in expand_to_list(config):
         print(el)

@@ -44,9 +44,9 @@ def expand_as_generator(config : dict):
     """
     default_config = {}
     if "default" in config:
-            default_config = config.pop("default")   
+            default_config = config.pop("default")  
     config = push_default(default_config, config)
-    
+
     n_copies = 1
     if "n_copies" in config:
             n_copies = config.pop("n_copies")
@@ -62,7 +62,8 @@ def expand_as_generator(config : dict):
                 for el in stitch_all(stitch_config, config):
                     yield el 
             else:
-                yield stitch(stitch_config, config)         
+                for el in stitch(stitch_config, config):
+                    yield el
 
 def push_default(default_config: dict, config : dict):
     """
@@ -89,7 +90,7 @@ def stitch_all(stitch_configs : dict, configs : dict):
     :return: yields all combinations. 
     """
     for el in stitch_configs:
-        for itm in stitch(el, configs):
+        for itm in stitch(el, deepcopy(configs)):
             yield itm      
 
 def stitch(stitch_config, configs : dict):
@@ -126,13 +127,11 @@ def stitch(stitch_config, configs : dict):
         #     yield expand_as_generator(nd.structure(temp,configs))
         yield 1
     elif isinstance(configs[stitch_config],dict):
-        yield 2
-        # for itm in expand_as_generator(configs[stitch_config]):
-        #     temp = deepcopy(configs)
-        #     temp[stitch_config] = itm
-        #     yield temp
+        for itm in expand_as_generator(configs[stitch_config]):
+            temp = deepcopy(configs)
+            temp[stitch_config] = itm
+            yield temp
 
-        # yield expand_as_generator(configs[stitch_config])
     elif isinstance(configs[stitch_config],Iterable):
         for el in configs[stitch_config]:
             temp = deepcopy(configs)
