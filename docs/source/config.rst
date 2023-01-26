@@ -27,6 +27,8 @@ What's more, these configurations can be nested, so any markup described below w
 }
 ```
 
+If you wish to replacate a configuration you can include a `"n_copies" : <#copies>` to do so. 
+
 Stiching
 ********
 
@@ -43,20 +45,211 @@ Stitch will be parse as follows:
 Product Example
 ---------------
 
+Start with the configuration
+```
+{
+    stitch : [ { "a", "b" } ],
+    "a" : [1, 2],
+    "b' : [4, 5]
+}
+```
+
+We would get 
+[
+    {
+        "a" : 1,
+        "b" : 4
+    },
+    {
+        "a" : 1,
+        "b" : 5
+    },
+    {
+        "a" : 2,
+        "b" : 4
+    },
+    {
+        "a" : 2,
+        "b" : 5
+    }
+]
+
 Pairwise Example
 ----------------
+Start with the configuration
+```
+{
+    stitch : [ ["a", "b"] ],
+    "a" : [1, 2],
+    "b' : [4, 5]
+}
+```
+
+We would get
+```
+[
+    {
+        "a" : 1,
+        "b" : 4
+    },
+    {
+        "a" : 2,
+        "b" : 5
+    }
+]
+```
 
 Sequential Examples
 -------------------
+Start with the configuration
+```
+{
+    stitch : [ "a", "b" ],
+    "a" : [1, 2],
+    "b' : [4, 5]
+}
+```
+
+We would get
+```
+[
+    {
+        "a" : 1,
+        "b" : [4, 5]
+    },
+    {
+        "a" : 2,
+        "b" : [4, 5]
+    }
+    {
+        "a" : [1, 2],
+        "b" : 4
+    },
+    {
+        "a" : [1, 2],
+        "b" : 5
+    }
+]
+```
 
 Dictionary
 ^^^^^^^^^^
+Start with the configuration
+```
+{
+    stitch : [ { "a", "b" } ],
+    "a" : 
+        { "stitch" : ["c"],
+            "c" : [1, 2]
+            "d" : [3, 4]
+        },    
+    "b' : [4, 5]
+}
+```
+
+We end up with 
+```
+[
+    {
+        "a" : 
+            { "c" : 1,
+              "d" : [3, 4]
+            },
+        "b" : 4
+    },
+    {
+        "a" : 
+            { "c" : 1,
+              "d" : [3, 4]
+            },
+        "b" : 5
+    },
+    {
+        "a" : 
+            { "c" : 2,
+              "d" : [3, 4]
+            },
+        "b" : 4
+    },
+    {
+        "a" : 
+            { "c" : 2,
+              "d" : [3, 4]
+            },
+        "b" : 5
+    }
+]
+```
 
 Other Iterables
 ^^^^^^^^^^^^^^^
+Start with the configuration 
+```
+{
+    stitch : [ "a" ],
+    "a" : [1, 
+           {
+                "c" : 
+                    {
+                       "stitch": "d", 
+                       "d":[7,8]
+                    }
+            }, 
+           3 ],  
+    "b' : [4, 5]
+}
+```
+
+We end up with 
+```
+{
+    "a" : 1,
+    "b" : [4, 5]
+},
+{
+    "a" : 
+        {
+            "c" : 
+                {
+                    "d" : 7
+                }
+        },
+    "b" : [4, 5]
+},
+{
+    "a" : 
+        {
+            "c" : 
+                {
+                    "d" : 8
+                }
+        },
+    "b" : [4, 5]
+},
+{
+    "a" : 3,
+    "b" : [4, 5]
+}
+```
 
 Other Types
 ^^^^^^^^^^^
+Start with the configuration
+```
+{
+    stitch : [ "a" ],
+    "a" : 1,  
+    "b' : [4, 5]
+}
+```
+
+We would end up with
+```
+{
+    "a" : 1,
+    "b" : [4, 5]
+}
+```
 
 Sample Configuration
 ####################
@@ -93,18 +286,6 @@ Talk about stitch!-> do a list, only things in list will be added (add flag to j
             ]
     ]
 
-#can have default variables but not default directives!
-    So individual variables and sampled ones can be passed in.
-    However, merge, number of copies cannot. 
-        Number of copies will spit out n copies of the same thing
-        Whereas control will add defaults to all
-## Flags
-"merge":
-{
-    "combo" : [[], []]
-    "pairwise" : [[], []]
-    "parallel" : [[], []]
-},
 "sample-control":
     {
         [{}, ...] # Sample all variables. Add them to pairwise. Add them to source destination
@@ -159,76 +340,6 @@ These should be kept in their own files.
         }
 }
 ```
-
-Algorithm Configuration
-***********************
-
-Algorithms will have their own specific parameters, however, they should contain the following at a mininum:
-
-```
-{
-    "alg": <alg name or reference>
-    "whitelists" : #(optional)
-    {
-        "combo": 
-        [
-            "var1", "var2", ...
-        ]
-    },
-    "sample" : #(optional, see below)
-    {
-
-    },
-    "params" :
-    {
-
-    },
-    "search" : 
-    {
-
-    }
-}
-```
-
-A `combo` variable is necessary to signify which variables contain lists for combining into separate experiments 
-(when used with sampling, if both are to be done to a variable, they should be specified here as well).
-
-`params` specifies algorithm functionality at a core level
-
-'search` specifies parameters they may change at runtime and are mean generally associated with evaluation of a solution.
-
-Environment Configuration
-*************************
-
-Environments will have their own specific parameters, however, they should contain the following at a mininum:
-
-```
-{
-    "env": <env name or reference>
-    "whitelists" : #(optional)
-    {
-        "combo": 
-        [
-            "var1", "var2", ...
-        ]
-    },
-    "sample" : #(optional, see below)
-    {
-
-    },
-    "params" :
-    {
-
-    },
-    "max_time" : <int for maximum number of timesteps>
-}
-```
-
-A `combo` variable is necessary to signify which variables contain lists for combining into separate experiments 
-(when used with sampling, if both are to be done to a variable, they should be specified here as well).
-
-`params` specifies environment functionality
-
 
 Sampling Parameters
 ###################
