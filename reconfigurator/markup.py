@@ -46,7 +46,7 @@ def expand_as_generator(config : dict):
     if "default" in config:
             default_config = config.pop("default")  
     config = push_default(default_config, config)
-
+    print(config)
     n_copies = 1
     if "n_copies" in config:
             n_copies = config.pop("n_copies")
@@ -108,12 +108,28 @@ def stitch(stitch_config, configs : dict):
     :return: yields all combinations. 
     """
     if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
+        print(configs)
+        # d_filter = {}
+
+        # for el in stitch_config:
+        #     if el in configs:
+        #         d_filter[el] = configs[el]
+
+        # d_flat = nd.unstructure(configs)
+        
+        # for el in stitch_config:
+        #     if el in d_flat:
+        #         d_filter[el] = d_flat[el]
+
         d_flat = nd.unstructure(configs)
         d_filter = {}
         for el in stitch_config:
             d_filter[el] = d_flat[el]
             if not isinstance(d_filter[el], list):
                     d_filter[el] = [d_filter[el]]
+
+        # Instead of doing the above options, do a find all and then lump these together. Use recursive set
+        # Will need to test whether or not this can handle nested variables of the same name
 
         if isinstance(stitch_config,tuple):
             gen = itertools.product(*d_filter.values())
