@@ -108,24 +108,24 @@ def stitch(stitch_config, configs : dict):
     :return: yields all combinations. 
     """
     if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
-        # d_flat = nd.unstructure(configs)
-        # d_filter = {}
-        # for el in stitch_config:
-        #     d_filter[el] = d_flat[el]
+        d_flat = nd.unstructure(configs)
+        d_filter = {}
+        for el in stitch_config:
+            d_filter[el] = d_flat[el]
+            if not isinstance(d_filter[el], list):
+                    d_filter[el] = [d_filter[el]]
 
-        # if isinstance(stitch_config,tuple):
-        #     for stitch_config in d_filter:
-        #         if not isinstance(d_filter[stitch_config], Iterable):
-        #             d_filter[stitch_config] = [d_filter[stitch_config]]
-        #     gen = itertools.product(*d_filter.values())
-        # else:
-        #     gen = itertools.pairwise(d_filter.values())
+        if isinstance(stitch_config,tuple):
+            gen = itertools.product(*d_filter.values())
+        else:
+            gen = pairwise(list(d_filter.values()))
 
-        # for config in gen:
-        #     temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
-        #     temp = nd.merge(d_flat,temp)
-        #     yield expand_as_generator(nd.structure(temp,configs))
-        yield 1
+        for config in gen:
+            temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
+            temp = nd.merge(d_flat,temp)
+            for itm in expand_as_generator(nd.structure(temp,configs)):
+                yield itm
+
     elif isinstance(configs[stitch_config],dict):
         for itm in expand_as_generator(configs[stitch_config]):
             temp = deepcopy(configs)
@@ -145,3 +145,15 @@ def stitch(stitch_config, configs : dict):
     else:
         yield configs
 
+def pairwise(groups : Iterable):
+    """
+    Takes element from each group and pairs them together by index
+
+    :param groups: (list) list of lists
+    :return: (generator) yields all combinations
+    """
+    for i in range(len(groups[0])):
+        els = [0]*len(groups)
+        for j in range(len(groups)):
+            els[j] = groups[j][i]
+        yield els
