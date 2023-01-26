@@ -58,8 +58,11 @@ def expand_as_generator(config : dict):
         stitch_config = config.pop("stitch")
         
         for i in range(n_copies):
-            for el in stitch(stitch_config, config):
-                yield el          
+            if isinstance(stitch_config,list):
+                for el in stitch_all(stitch_config, config):
+                    yield el 
+            else:
+                yield stitch(stitch_config, config)         
 
 def push_default(default_config: dict, config : dict):
     """
@@ -69,12 +72,27 @@ def push_default(default_config: dict, config : dict):
     :param config: (dict) configuration file
     :return: (dict) configuration file with defaults
     """
+    temp_stitch = ()
     if "sample" in default_config:
         s = default_config.pop("sample")
         default_config = sample.sample_all(s, default_config)
-    return nd.merge(default_config,config)        
+        config["stitch"].append(temp_stitch)
+    return nd.merge(default_config,config)
 
-def stitch(stitch_config : dict, configs : dict):
+def stitch_all(stitch_configs : dict, configs : dict):
+    """
+    Generator that will stitch together expanded configurations.
+    Stitch should be specified as a list. If the element encountered is
+    
+    :param stitch_config: (list) how to stitch together configurations
+    :param config: (dict) dense configuration
+    :return: yields all combinations. 
+    """
+    for el in stitch_configs:
+        for itm in stitch(el, configs):
+            yield itm      
+
+def stitch(stitch_config, configs : dict):
     """
     Generator that will stitch together expanded configurations.
     
@@ -84,37 +102,42 @@ def stitch(stitch_config : dict, configs : dict):
     - a dict  -> this will be expanded directly
     - else    -> the element will be yielded
     
-    :param stitch_config: (list) how to stitch together configurations
+    :param stitch_config: () how to stitch together configurations
     :param config: (dict) dense configuration
     :return: yields all combinations. 
     """
-    for el in stitch_config:
-        if isinstance(el,tuple) or isinstance(el,list):
-            d_flat = nd.unstructure(configs)
-            d_filter = {}
-            for itm in el:
-                d_filter[itm] = d_flat[itm]
+    if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
+        # d_flat = nd.unstructure(configs)
+        # d_filter = {}
+        # for el in stitch_config:
+        #     d_filter[el] = d_flat[el]
 
-            if isinstance(el,tuple):
-                for el in d_filter:
-                    if not isinstance(d_filter[el], Iterable):
-                        d_filter[el] = [d_filter[el]]
-                gen = itertools.product(*d_filter.values())
+        # if isinstance(stitch_config,tuple):
+        #     for stitch_config in d_filter:
+        #         if not isinstance(d_filter[stitch_config], Iterable):
+        #             d_filter[stitch_config] = [d_filter[stitch_config]]
+        #     gen = itertools.product(*d_filter.values())
+        # else:
+        #     gen = itertools.pairwise(d_filter.values())
+
+        # for config in gen:
+        #     temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
+        #     temp = nd.merge(d_flat,temp)
+        #     yield expand_as_generator(nd.structure(temp,configs))
+        yield 1
+    elif isinstance(configs[stitch_config],dict):
+        yield 2
+        # yield expand_as_generator(configs[stitch_config])
+    elif isinstance(configs[stitch_config],Iterable):
+        for el in configs[stitch_config]:
+            temp = deepcopy(configs)
+            if isinstance(el,dict):
+                for itm in expand_as_generator(el):
+                    temp[stitch_config] = itm
+                    yield temp
             else:
-                gen = itertools.pairwise(d_filter.values())
-
-            for config in gen:
-                temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
-                temp = nd.merge(d_flat,temp)
-                yield expand_as_generator(nd.structure(temp,configs))
-        elif isinstance(configs[el],dict):
-            yield expand_as_generator(configs[el])
-        elif isinstance(configs[el],Iterable):
-            for itm in configs[el]:
-                if isinstance(itm,dict):
-                    yield expand_as_generator(itm)
-                else:
-                    yield itm
-        else:
-            yield configs[el]
+                temp[stitch_config] = el
+                yield temp
+    else:
+        yield configs
 
