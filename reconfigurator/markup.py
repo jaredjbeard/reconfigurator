@@ -127,6 +127,11 @@ def stitch(stitch_config, configs : dict):
         yield 1
     elif isinstance(configs[stitch_config],dict):
         yield 2
+        # for itm in expand_as_generator(configs[stitch_config]):
+        #     temp = deepcopy(configs)
+        #     temp[stitch_config] = itm
+        #     yield temp
+
         # yield expand_as_generator(configs[stitch_config])
     elif isinstance(configs[stitch_config],Iterable):
         for el in configs[stitch_config]:
