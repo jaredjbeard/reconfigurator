@@ -48,7 +48,7 @@ Product Example
 Start with the configuration
 ```
 {
-    stitch : [ { "a", "b" } ],
+    stitch : [ ( "a", "b" ) ],
     "a" : [1, 2],
     "b' : [4, 5]
 }

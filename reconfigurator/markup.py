@@ -19,7 +19,7 @@ from copy import deepcopy
 
 import nestifydict as nd
 
-import reconfigurator.sample as sample
+import sample
 
 __all__ = ["merge_configs", "merge_configs_from_file"]
 
@@ -45,7 +45,7 @@ def expand_as_generator(config : dict):
     default_config = {}
     if "default" in config:
             default_config = config.pop("default")   
-    config = push_default(default_config)
+    config = push_default(default_config, config)
     
     n_copies = 1
     if "n_copies" in config:
@@ -67,11 +67,12 @@ def push_default(default_config: dict, config : dict):
     
     :param default_config: (dict) configuration file defaults
     :param config: (dict) configuration file
+    :return: (dict) configuration file with defaults
     """
     if "sample" in default_config:
         s = default_config.pop("sample")
         default_config = sample.sample_all(s, default_config)
-    nd.merge(default_config,config)        
+    return nd.merge(default_config,config)        
 
 def stitch(stitch_config : dict, configs : dict):
     """
@@ -90,25 +91,24 @@ def stitch(stitch_config : dict, configs : dict):
     for el in stitch_config:
         if isinstance(el,tuple) or isinstance(el,list):
             d_flat = nd.unstructure(configs)
-
             d_filter = {}
             for itm in el:
                 d_filter[itm] = d_flat[itm]
-                
-            if isinstance(el,tuple):
-                gen = itertools.product
-            else:
-                gen = itertools.pairwise
 
-            for config in gen(*d_filter.values()):
-                for param in config:
-                    temp = dict(zip(deepcopy(d_filter.keys()), deepcopy(param)))
-                    temp = nd.merge(d_flat,temp)
-                    
-                    yield expand_as_generator(nd.structure(temp,configs))
-                
+            if isinstance(el,tuple):
+                for el in d_filter:
+                    if not isinstance(d_filter[el], Iterable):
+                        d_filter[el] = [d_filter[el]]
+                gen = itertools.product(*d_filter.values())
+            else:
+                gen = itertools.pairwise(d_filter.values())
+
+            for config in gen:
+                temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
+                temp = nd.merge(d_flat,temp)
+                yield expand_as_generator(nd.structure(temp,configs))
         elif isinstance(configs[el],dict):
-            yield expand_as_generator(config[el])
+            yield expand_as_generator(configs[el])
         elif isinstance(configs[el],Iterable):
             for itm in configs[el]:
                 if isinstance(itm,dict):
