@@ -5,7 +5,7 @@ Introduction to Reconfigurator
 Reconfigurator is a tool for setting up and modify configuration files.
 It has support for the following:
     - Modification of configuration files through both an API and command line interface,
-    - a dense markdown for easily setting configurations or compressing data.
+    - a dense markup for easily setting configurations or compressing data.
     - Functionatity for sampling configurations (for example, to run experiments where parameters are a random variable), and
 
 
@@ -17,8 +17,8 @@ Then run `sh add_cli.sh`. This will add the reconfigurator CLI to your path. (in
 
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 
-Markdown
-########
+Markup
+######
 
 Under Construction
 
