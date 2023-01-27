@@ -1,6 +1,6 @@
 import unittest
 
-from markup import expand_to_list, expand_as_generator
+from reconfigurator.expand import expand_to_list, expand_as_generator
 
 def test_expand_to_list():
     # config = {

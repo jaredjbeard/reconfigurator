@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-This script contains functions related to getting sets of configurations, particularly for use in experiments.
+This script contains functions for expanding a dense configuration file into a list of configurations.
 """
 __license__ = "BSD-3"
 __docformat__ = 'reStructuredText'
@@ -21,7 +21,7 @@ import nestifydict as nd
 
 import sample
 
-__all__ = ["merge_configs", "merge_configs_from_file"]
+__all__ = ["expand_to_list", "expand_as_generator", "push_default", "stitch_all", "stitch"]
 
 RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
     
@@ -95,13 +95,15 @@ def stitch_all(stitch_configs : dict, configs : dict):
 
 def stitch(stitch_config, configs : dict):
     """
-    Generator that will stitch together expanded configurations.
-    
-    Stitch should be specified as a list. If the element encountered is 
-    - a tuple -> the product of all elements in tuple will be expanded
-    - a list  -> a pairwise arrangement of elements will be expanded
-    - a dict  -> this will be expanded directly
-    - else    -> the element will be yielded
+    Stitching is the process of combining configurations from different groups. 
+    To define a stitch, users must include a key called stitch which contains the name of variables we want to stitch/compose into a set of configurations.
+    Stitch will be parse as follows:
+    - a tuple: stitch variables as the component product (combination of the elements in the variable)
+    - a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
+    - a key: parse variable sequentially. If the values contained in the member 
+        - a dict: elements will be expanded as a normal
+        - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
+        - any other type: elements will be returned as is 
     
     :param stitch_config: () how to stitch together configurations
     :param config: (dict) dense configuration
@@ -112,7 +114,7 @@ def stitch(stitch_config, configs : dict):
 
         for el in stitch_config:
             if el in configs and isinstance(configs[el], dict):
-                configs[el] = list(expand_as_generator(configs[el]))
+                configs[el] = expand_to_list(configs[el])
 
         d_flat = nd.unstructure(configs)
         

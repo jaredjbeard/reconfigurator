@@ -1,5 +1,5 @@
-reconfigurator
-==============
+Reconfigurator API
+==================
 
 .. toctree::
    :maxdepth: 4

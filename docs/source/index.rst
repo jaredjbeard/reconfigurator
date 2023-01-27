@@ -11,6 +11,7 @@ Welcome to Reconfigurator's documentation!
    :caption: Contents:
 
    introduction
+   markup
    modules
 
 
