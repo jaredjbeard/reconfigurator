@@ -2,12 +2,12 @@
 Reconfigurator Markup
 =====================
 
-Reconfigurator is a tool for setting up and modify configuration files.
+Reconfigurator Markup is a tool for providing shorthand descriptions of configurations.
 It has support for the following:
     - grouping together configurations of multiple modules,
     - setting default configurations and modification through both an API and command line interface,
     - a dense markdown for easily setting configurations or compressing data.
-    - sampling configurations when used to set up experiments, and
+    - (pending) sampling configurations when used to set up experiments, and
     - setting default parameters.
 
 On terminology, please note a *group* is a type of configuration, and a *configuration* is a set of parameters.
