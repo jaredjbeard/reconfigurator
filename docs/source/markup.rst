@@ -26,7 +26,7 @@ What's more, these configurations can be nested, so any markup described below w
     }
 
 
-If you wish to replacate a configuration you can include a `"n_copies" : <#copies>` to do so. 
+If you wish to replicate a configuration you can include a `"n_copies" : <#copies>` to do so. 
 
 Stiching
 ********
