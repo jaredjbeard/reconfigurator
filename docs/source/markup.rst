@@ -1,3 +1,4 @@
+.. _markup:
 =====================
 Reconfigurator Markup
 =====================
@@ -28,8 +29,8 @@ What's more, these configurations can be nested, so any markup described below w
 
 If you wish to replacate a configuration you can include a `"n_copies" : <#copies>` to do so. 
 
-Stiching
-********
+Stitching
+*********
 
 Stitching is the process of combining configurations from different groups. 
 To define a stitch, users must include a key called stitch which contains the name of variables we want to stitch/compose into a set of configurations.
@@ -40,6 +41,9 @@ Stitch will be parse as follows:
         - a dict: elements will be expanded as a normal
         - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
         - any other type: elements will be returned as is 
+
+What's more, pairwise and product stitching can be combined by nesting tuples and lists.
+This is useful when you need to share some variables across trials, but also want to vary some others.
 
 Product Example
 ---------------

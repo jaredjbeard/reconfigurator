@@ -91,7 +91,7 @@ def update(var, val, config : dict, update_all : bool = False):
     :param var: () parameter to update
     :param val: () new value of parameter
     :param config: (dict) configuration
-    :param update_all: (bool) if true, accepts var as a list of keys, *defualt*: False
+    :param update_all: (bool) if true, accepts var as a list of keys, *default*: False
     """
     if update_all:
         for key, v in zip(var, val):
