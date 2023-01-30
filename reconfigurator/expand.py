@@ -77,11 +77,8 @@ def push_default(default_config: dict, config : dict):
         s = default_config.pop("sample")
     else:
         s = []
-    for el in config:
-        if isinstance(config[el],dict):
-            config[el] = nd.merge(default_config, config[el])
+    config = nd.merge(default_config, config)
     return sample.sample_all(s, config)
-
 
 def stitch_all(stitch_configs : dict, configs : dict):
     """

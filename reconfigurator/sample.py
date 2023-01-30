@@ -62,6 +62,7 @@ def sample_all(sample_config : dict, output : dict):
         s = sample(el)
                 
         nd.recursive_set(output,el["key"],s)
+    return output
 
 def sample(sample_params : dict):
     """
