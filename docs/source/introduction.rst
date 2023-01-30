@@ -2,12 +2,11 @@
 Introduction to Reconfigurator
 ==============================
 
-Reconfigurator is a tool for setting up and modifying configuration files. 
-This is useful in a variety of cases.
+Reconfigurator simplifies the process of setting up and modifying configuration files. With its CLI, you can easily reference local files without affecting the system path. And, if you need to modify a variable, just use the command line and Reconfigurator will handle the rest. No more searching through files to find that one line.
 
-- Suppose we have a set of configuration files for a program and we may want to reference them locally, but do not wish to modify the system path. Use of the reconfigurator command line interface allows us to interact with the local system. What's more we can modify variables from the command line and will replace them without needing to hunt down the file and the line of the variable. 
+When it comes to running experiments, Reconfigurator can make your life easier too. Instead of manually creating separate config files for each experiment, let Reconfigurator do the heavy lifting. Its markup, based on JSON, allows you to consolidate all the data into one file. Then, you can compile to generate the specific config files you need. This can save you a lot of time and reduce the chance of errors.
 
-- Suppose we need to run a set of experiments. It may often be the case we need separate configuration files for each experiment. This can be tedious and time consuming. Using our markup built on existing tools such as json, we can easily compress the data into a single file and then sample from it to generate the configuration files we need. As an example, I often run experiments in reinforcement learning. I need to set up environments (e.g. a gridworld with varying numbers of cells or initial positions of the agent). I also then need to look at how various parameters for the learning algorithm affect the performance of the agent. Setting each of these individually can be annoying. It is also subject to errors. What I ended up doing was writing a script to generate the configuration files I needed. And eventually that led to the reconfigurator!
+For instance, in reinforcement learning, setting up environments and testing various parameters for the learning algorithm can be a hassle. With Reconfigurator, you can generate the config files you need with ease, just like the creator of the tool did. Say goodbye to manual, time-consuming config file generation and try out Reconfigurator today.
 
 Reconfigurator CLI
 ##################
