@@ -109,20 +109,42 @@ def stitch(stitch_config, configs : dict):
     :param config: (dict) dense configuration
     :return: yields all combinations. 
     """
+
+    temp_configs = deepcopy(configs)
+    new_configs = deepcopy(configs)
+    print("old ", configs)
+    print(stitch_config)
+    for el in temp_configs:
+        print(el)
+        if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
+            count = len(stitch_config)
+            for itm in stitch_config:
+                if el not in stitch_config and ( not isinstance(temp_configs[el],dict) or nd.find_key(temp_configs[el],itm) is None):
+                    count -= 1
+            if count == 0:
+                new_configs.pop(el)
+        elif el != stitch_config and ( not isinstance(new_configs[el],dict) or nd.find_key(new_configs[el], stitch_config) is None):
+            print("pop")
+            new_configs.pop(el)
+    print("new ", new_configs)
+
     if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
         d_filter = {}
 
         for el in stitch_config:
-            if el in configs and isinstance(configs[el], dict):
-                configs[el] = expand_to_list(configs[el])
+            key = nd.find_key(new_configs,el)
+            if key != None:
+                temp_dict = nd.recursive_get(new_configs, key)
+                if isinstance(temp_dict, dict):
+                    nd.recursive_set(new_configs, key, expand_to_list(temp_dict))
 
-        d_flat = nd.unstructure(configs)
+        d_flat = nd.unstructure(new_configs)
         
         for el in stitch_config:
             if el in d_flat:
                 d_filter[el] = d_flat[el]
 
-        d_flat = nd.unstructure(configs)
+        d_flat = nd.unstructure(new_configs)
         d_filter = {}
         for el in stitch_config:
             d_filter[el] = d_flat[el]
@@ -137,27 +159,31 @@ def stitch(stitch_config, configs : dict):
         for config in gen:
             temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
             temp = nd.merge(d_flat,temp)
-            for itm in expand_as_generator(nd.structure(temp,configs)):
+            for itm in expand_as_generator(nd.structure(temp,new_configs)):
                 yield itm
 
-    elif isinstance(configs[stitch_config],dict):
-        for itm in expand_as_generator(configs[stitch_config]):
-            temp = deepcopy(configs)
-            temp[stitch_config] = itm
-            yield temp
-
-    elif isinstance(configs[stitch_config],Iterable):
-        for el in configs[stitch_config]:
-            temp = deepcopy(configs)
-            if isinstance(el,dict):
-                for itm in expand_as_generator(el):
-                    temp[stitch_config] = itm
-                    yield temp
-            else:
-                temp[stitch_config] = el
+    elif nd.find_key(new_configs, stitch_config) != None:
+        temp_config = nd.recursive_get(new_configs, nd.find_key(new_configs, stitch_config))
+        if isinstance(temp_config,dict):
+            for itm in expand_as_generator(temp_config):
+                temp = deepcopy(new_configs)
+                temp[stitch_config] = itm
                 yield temp
+
+        elif isinstance(temp_config,Iterable):
+            for el in temp_config:
+                temp = deepcopy(new_configs)
+                if isinstance(el,dict):
+                    for itm in expand_as_generator(el):
+                        temp[stitch_config] = itm
+                        yield temp
+                else:
+                    temp[stitch_config] = el
+                    yield temp
+        else:
+            yield new_configs
     else:
-        yield configs
+        yield new_configs
 
 def pairwise(groups : Iterable):
     """
