@@ -45,7 +45,7 @@ Stitch will be parse as follows:
         - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
         - any other type: elements will be returned as is 
 
-What's more, pairwise and product stitching can be combined by nesting tuples and lists.
+What's more, pairwise and product stitching can be combined by nesting stitch commands within dictionaries.
 This is useful when you need to share some variables across trials, but also want to vary some others.
 
 Please note, we use `NestifyDict <https://pypi.org/project/nestifydict/>`_ to find nested variables so you should only specify the deepest key and it will find them.
