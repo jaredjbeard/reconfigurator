@@ -73,12 +73,15 @@ def push_default(default_config: dict, config : dict):
     :param config: (dict) configuration file
     :return: (dict) configuration file with defaults
     """
-    temp_stitch = ()
     if "sample" in default_config:
         s = default_config.pop("sample")
-        default_config = sample.sample_all(s, default_config)
-        config["stitch"].append(temp_stitch)
-    return nd.merge(default_config,config)
+    else:
+        s = []
+    for el in config:
+        if isinstance(config[el],dict):
+            config[el] = nd.merge(default_config, config[el])
+    return sample.sample_all(s, config)
+
 
 def stitch_all(stitch_configs : dict, configs : dict):
     """

@@ -42,7 +42,7 @@ def from_file_to_file(sample_file : str, save_file : str):
     f_save.dump(sample_all(sample_config, save_output))
     f_save.close()
     
-def sample_all(config : dict, output : dict):
+def sample_all(sample_config : dict, output : dict):
     """
     Sample configuration to an output dictionary
     
@@ -50,24 +50,18 @@ def sample_all(config : dict, output : dict):
     Otherwise the variable should be defined as a list.
     Nonexistent keys are skipped as the sampling declarations are contained here. 
     
-    :param config: (dict) Sample configuration
+    :param sample_config: (dict) Sample configuration
     :param output: (dict) Where to add samples
     """
-    d = {"output": output, "config": config}
-    for el in config:
-        s = sample(config[el])
-        for itm in config[el]["key"]:
-            if (not isinstance(itm,list)) and itm == "all":
-                config[el]["key"] = output.keys()
-        keys = nd.list_keys(config[el],"key")
-        
-        # Finds and overwrites params specified by other variables ...?
-        for param in config[el]:
-            if isinstance(config[el][param],list):
-                config[el][param] = deepcopy(nd.recursive_get(d,nd.find_key(config[el][param])))
+    for i, el in enumerate(sample_config):
+        # Replace references
+        for param in el:
+            if isinstance(el[param],dict) and "ref" in el[param]:
+                sample_config[i][param] = deepcopy(nd.recursive_get(output,nd.find_key(el[param]["ref"])))
     
-        for key in keys:
-            nd.recursive_set(output,key,s)
+        s = sample(el)
+                
+        nd.recursive_set(output,el["key"],s)
 
 def sample(sample_params : dict):
     """

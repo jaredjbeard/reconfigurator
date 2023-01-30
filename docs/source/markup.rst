@@ -29,6 +29,9 @@ What's more, these configurations can be nested, so any markup described below w
 
 If you wish to replacate a configuration you can include a `"n_copies" : <#copies>` to do so. 
 
+If you wish to specify a default configuration, you can include a `"default" : {"var1": <val>, ... }` to do so.
+This will be used to fill in any missing values in the configurations, however, if they exist internally, the specific values will overwrite the default case.
+
 Stitching
 *********
 
@@ -44,6 +47,9 @@ Stitch will be parse as follows:
 
 What's more, pairwise and product stitching can be combined by nesting tuples and lists.
 This is useful when you need to share some variables across trials, but also want to vary some others.
+
+Please note, we use `NestifyDict <https://pypi.org/project/nestifydict/>`_ to find nested variables so you should only specify the deepest key and it will find them.
+I apologize for any inconvencience this may cause. Where there are multiple of the sample keys, simply place these in nested configurations.
 
 Product Example
 ---------------
@@ -256,127 +262,53 @@ We would end up with::
     }
 
 
-.. Sample Configuration
-.. ####################
+Sample Configuration
+####################
 
-.. ```
-.. {
-..     {
-..         "group1" : {},
-..         "randomGroup name": {},
-..         371: {},
-..         ...
-..     }, 
-..     {
-..         "group1" : {},
-..         "randomGroup name": {},
-..         371: {},
-..         ...
-..     }, 
-..     ...
-.. }
-.. ```
+Let's say you want to to run Monte Carlo trials, you need some way to sample.
+Doing so can tend to be quite case specific, but here we provide a basic framework for sampling configurations.
+Begin by adding your variable key to `"stitch"` as you normally would. 
+Within the `"default"` object, you can specify a `"sample"` key which will contain all variables we wish to sample.::
 
-.. Talk about stitch!-> do a list, only things in list will be added (add flag to just do everythiing unlisted too?)
-..     "stitch":
-..     [
-..         "parallel": [],
-..         "combo":
-..             [
-..                 itm, 
-..                 {"pairwise":
-..                 [
+    "sample" : [ {}, {}, ... ]
 
-..                 ]}
-..             ]
-..     ]
+Within the sample you should have a variable `"key"` with which you can specify where to place the sample.
+This can be a nested key.
 
-.. "sample-control":
-..     {
-..         [{}, ...] # Sample all variables. Add them to pairwise. Add them to source destination
-..             #not supporting with combo or pairwise as dimensions are weird and behavior can't be guaranteed
-..             # Then n-copies can gerenate more of them.
-..     }
-.. "default": 
-.. {
-..     "default": True
-    
-..     "n_copies": <#>
-..     "sample": [{}, {}]
-..     "var": ...,
-..     "var2": ...
-.. }
-.. "values": []
+You can reference other variables in the configuration by replacing any value with a dictionary `{"ref": "key"}`.
 
-.. Sample dicts should look like:
-.. {
-..     "key": ["", ""]
-..     "merge": "<merge type>"
-..     "params":
-.. }
-.. If key contains all, then it will be added to all sub levels
+We support three types of sampling: discrete, continuous, and incremented. 
+Additionally, allow users to reference other variables as criteria.
 
-.. # Expand will push 
-.. Assume that shared 
+Discrete Sampling
+-----------------
 
-.. #Alg will check for values, merge, default or sample
+To sample uniformly, you would specify the following::
 
-.. A configuration file will consist of a dictionary containing the following elements:
-..     - "default": (optional) default parameters for all algorithms or environments under test. These will be overwritten by more specific described below.
+    "sample" : 
+    [
+        {
+            "key" : ["a", "b"],
+            "choice": Options to sample from
+            "probability": probability to sample from
+            "num": (optional) number of times to sample
+        }
+    ]
 
-.. Users should also specify either other of below:
-..     - "algs": A list of algorithms with their specific parameters
-..     - "envs": A list of environments with their specific parameters
-.. These should be kept in their own files. 
+Continuous and Incremental Sampling
+-----------------------------------
 
-.. ```
-.. {
-..     "default": 
-..         {
-..             ...,
-..             "sample" : #(optional, see below)
-..             {
+To sample a continuous distribution, you would specify the following::
 
-..             },
-..         },
-..     "algs" :
-..         {
-..             [{}, {}, {}]
-..         }
-.. }
-.. ```
+    "sample" : 
+    [
+        {
+            "key" : ["a", "b"],
+            "low": lower limit
+            "high": upper limit
+            "num_increments": (optional) number of increments to down sample a continuous space
+            "num": (optional) number of times to sample
+        }
+    ]
 
-.. Sampling Parameters
-.. ###################
-
-.. Users may wish to sample variables when running several experiments. 
-.. As described above sampling may be specified in 
-..     - "default" : Here a single sample is drawn for each variable every trial and will not cannot be combined with other variables
-..     - "alg" or "env" : Here samples are drawn as lists, overwritting sample commands from default, and maybe be combined with other features for experiment generation.
-
-.. Variables to be sampled are captured with a list as follows:
-.. ```
-.. "sample : [ "var1", "var2", ...]
-.. ```
-
-.. Within "default" or with each "alg"/"env", the corresponding variable should contain a dictionary rather than a single instance of the variable.
-.. The dictionary will contain the information necessary to sample as desired. 
-.. For example, discretely sampling "var1" would look something like:
-
-.. ```
-.. {
-..     "alg": alg1,
-..     "params": 
-..     {
-..         "var1":
-..         {
-..             "choice": [1,2,3]
-..         }
-..     }
-.. }
-.. ```
-
-.. Sampling uses `NestifyDict <https://pypi.org/project/nestifydict/>`_ so variables can be specified as their deepest key assuming this variable is only used in one place. 
-.. Otherwise the variable should be defined as a list.
-
-.. Further detail on specifying samples can be found in :ref:`Sampler <sampler>`.
+If `num_increments` is not specified, the values will be sampled continuously.
