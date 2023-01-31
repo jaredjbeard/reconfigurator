@@ -15,10 +15,10 @@ Reconfigurator CLI module
 Markup modules
 --------------
 
-Expand
-******
+Compiler
+********
 
-.. automodule:: expand
+.. automodule:: compiler
    :members:
    :undoc-members:
    :show-inheritance:
