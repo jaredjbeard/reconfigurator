@@ -139,8 +139,10 @@ def sample_discrete(rng, params):
     """
     num = params["num"] if "num" in params else None
     p = params["probability"] if "probability" in params else None
-    return list(rng.choice(params["choice"], num, replace = True, p = p))
-    
+    if num > 1:
+        return list(rng.choice(params["choice"], num, replace = True, p = p))
+    return float(rng.choice(params["choice"], num, replace = True, p = p))
+
 def filter(self):
     """
     Not Implemented... Perhaps add in later version

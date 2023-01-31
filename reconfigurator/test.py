@@ -50,7 +50,7 @@ def test_expand_to_list():
                     "key": "c",
                     "low": 0,
                     "high": 10,
-                    "num": 1
+                    "num": 2
                 }
             ],
         },
