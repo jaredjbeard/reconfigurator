@@ -223,7 +223,7 @@ if __name__=='__main__':
         replace_file(getattr(args,"replace")[0],getattr(args,"replace")[1])
     if hasattr(args, "merge"):
         merge_file(getattr(args,"merge"))  
-    if hasattr(args, "merge-recrusive"):
+    if hasattr(args, "merge-recursive"):
         merge_file(getattr(args,"merge-recrusive"), True)  
     if hasattr(args, "update"):
         val = []
