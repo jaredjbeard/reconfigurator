@@ -139,9 +139,12 @@ def sample_discrete(rng, params):
     """
     num = params["num"] if "num" in params else None
     p = params["probability"] if "probability" in params else None
-    if num > 1:
-        return list(rng.choice(params["choice"], num, replace = True, p = p))
-    return float(rng.choice(params["choice"], num, replace = True, p = p))
+    
+    vals = rng.choice(params["choice"], num, replace = True, p = p)
+    if isinstance(vals, np.ndarray):
+        if len(vals) > 1:
+            return list(vals)
+        return float(vals)
 
 def filter(self):
     """
