@@ -57,7 +57,7 @@ def sample_all(sample_config : dict, output : dict):
         # Replace references
         for param in el:
             if isinstance(el[param],dict) and "ref" in el[param]:
-                sample_config[i][param] = deepcopy(nd.recursive_get(output,nd.find_key(el[param]["ref"])))
+                sample_config[i][param] = deepcopy(nd.recursive_get(output,nd.find_key(output, el[param]["ref"])))
     
         s = sample(el)
                 
@@ -118,11 +118,11 @@ def sample_continuous(rng, params):
         if "num" in params:
             temp["num"] = params["num"]
         temp["choice"] = np.linspace(params["low"], params["high"], params["num_increments"])
-        return sample_discrete(rng,temp) 
+        return sample_discrete(rng,temp)
     else:
-        num = params["el"] if "num" in params else None
-        vals = rng.random(np.shape(params["low"]),num)
-        return (np.asarray(params["high"])-np.asarray(params["low"]))*vals + np.asarray(params["low"])
+        num = params["num"] if "num" in params else None
+        vals = rng.random(num)
+        return list((np.asarray(params["high"])-np.asarray(params["low"]))*vals + np.asarray(params["low"]))
     
 def sample_discrete(rng, params):
     """
@@ -137,9 +137,9 @@ def sample_discrete(rng, params):
         }
     :return: list of samples
     """
-    num = params["el"] if "num" in params else None
+    num = params["num"] if "num" in params else None
     p = params["probability"] if "probability" in params else None
-    return rng.choice(params["choice"], num, replace = False, p = p)
+    return list(rng.choice(params["choice"], num, replace = True, p = p))
     
 def filter(self):
     """

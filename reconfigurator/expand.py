@@ -113,8 +113,11 @@ def stitch(stitch_config, configs : dict):
         d_filter = {}
 
         for el in stitch_config:
-            if el in configs and isinstance(configs[el], dict):
-                configs[el] = expand_to_list(configs[el])
+            key = nd.find_key(configs,el)
+            if key != None:
+                temp_dict = nd.recursive_get(configs, key)
+                if isinstance(temp_dict, dict):
+                    nd.recursive_set(configs, key, expand_to_list(temp_dict))
 
         d_flat = nd.unstructure(configs)
         
@@ -140,22 +143,26 @@ def stitch(stitch_config, configs : dict):
             for itm in expand_as_generator(nd.structure(temp,configs)):
                 yield itm
 
-    elif isinstance(configs[stitch_config],dict):
-        for itm in expand_as_generator(configs[stitch_config]):
-            temp = deepcopy(configs)
-            temp[stitch_config] = itm
-            yield temp
-
-    elif isinstance(configs[stitch_config],Iterable):
-        for el in configs[stitch_config]:
-            temp = deepcopy(configs)
-            if isinstance(el,dict):
-                for itm in expand_as_generator(el):
-                    temp[stitch_config] = itm
-                    yield temp
-            else:
-                temp[stitch_config] = el
+    elif nd.find_key(configs, stitch_config) != None:
+        temp_config = nd.recursive_get(configs, nd.find_key(configs, stitch_config))
+        if isinstance(temp_config,dict):
+            for itm in expand_as_generator(temp_config):
+                temp = deepcopy(configs)
+                temp[stitch_config] = itm
                 yield temp
+
+        elif isinstance(temp_config,Iterable):
+            for el in temp_config:
+                temp = deepcopy(configs)
+                if isinstance(el,dict):
+                    for itm in expand_as_generator(el):
+                        temp[stitch_config] = itm
+                        yield temp
+                else:
+                    temp[stitch_config] = el
+                    yield temp
+        else:
+            yield configs
     else:
         yield configs
 
