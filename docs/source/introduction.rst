@@ -49,7 +49,7 @@ So I write dense markdown as::
         "n_copies" : 10
     }
 
-Then I call `expand_to_list(<dict>)` to get::
+Then I call `compile_to_list(<dict>)` to get::
     
     [
         {

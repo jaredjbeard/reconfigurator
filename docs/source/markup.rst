@@ -32,6 +32,8 @@ If you wish to replacate a configuration you can include a `"n_copies" : <#copie
 If you wish to specify a default configuration, you can include a `"default" : {"var1": <val>, ... }` to do so.
 This will be used to fill in any missing values in the configurations, however, if they exist internally, the specific values will overwrite the default case.
 
+**To compile** the markup, you can run `compile_to_list(config)` to get a list or `compile_as_generator(config)` to use the generator implementation.
+
 Stitching
 *********
 
@@ -279,6 +281,8 @@ You can reference other variables in the configuration by replacing any value wi
 
 We support three types of sampling: discrete, continuous, and incremented. 
 Additionally, allow users to reference other variables as criteria.
+
+**Note:** If you want to sample a variable multiple times, you can specify the number of times to sample with `"num"`. Using `n_copies` will use a repeated instance of each sample.
 
 Discrete Sampling
 -----------------

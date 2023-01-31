@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-This script contains functions for expanding a dense configuration file into a list of configurations.
+This script contains functions for compiling a dense configuration file into a list of configurations.
 """
 __license__ = "BSD-3"
 __docformat__ = 'reStructuredText'
@@ -21,23 +21,23 @@ import nestifydict as nd
 
 import sample
 
-__all__ = ["expand_to_list", "expand_as_generator", "push_default", "stitch_all", "stitch"]
+__all__ = ["compile_to_list", "compile_as_generator"]
 
 RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
     
-def expand_to_list(config : dict):
+def compile_to_list(config : dict):
     """
-    Expands dense configuration to get list of all sets of configurations
+    Compiles dense configuration to get list of all sets of configurations
     
     :param config: (dict) dense configuration file
     :return: (list) all configurations captured
     """
-    return list(expand_as_generator(config))
+    return list(compile_as_generator(config))
     
 
-def expand_as_generator(config : dict):
+def compile_as_generator(config : dict):
     """
-    Expands dense configuration using a generator to get all sets of configurations
+    Compiles dense configuration using a generator to get all sets of configurations
     
     :param config: (dict) dense configuration file
     :return: (dict) a single configuration
@@ -77,12 +77,15 @@ def push_default(default_config: dict, config : dict):
         s = default_config.pop("sample")
     else:
         s = []
+    for el in config:
+        if isinstance(config[el], dict):
+            config[el] = nd.merge(default_config, config[el])
     config = nd.merge(default_config, config)
     return sample.sample_all(s, config)
 
 def stitch_all(stitch_configs : dict, configs : dict):
     """
-    Generator that will stitch together expanded configurations.
+    Generator that will stitch together compiled configurations.
     Stitch should be specified as a list. If the element encountered is
     
     :param stitch_config: (list) how to stitch together configurations
@@ -101,8 +104,8 @@ def stitch(stitch_config, configs : dict):
     - a tuple: stitch variables as the component product (combination of the elements in the variable)
     - a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
     - a key: parse variable sequentially. If the values contained in the member 
-        - a dict: elements will be expanded as a normal
-        - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
+        - a dict: elements will be compiled as a normal
+        - any other iterable: elements will be parse sequentially then be returned (or if dict, compiled)
         - any other type: elements will be returned as is 
     
     :param stitch_config: () how to stitch together configurations
@@ -117,7 +120,7 @@ def stitch(stitch_config, configs : dict):
             if key != None:
                 temp_dict = nd.recursive_get(configs, key)
                 if isinstance(temp_dict, dict):
-                    nd.recursive_set(configs, key, expand_to_list(temp_dict))
+                    nd.recursive_set(configs, key, compile_to_list(temp_dict))
 
         d_flat = nd.unstructure(configs)
         
@@ -140,13 +143,13 @@ def stitch(stitch_config, configs : dict):
         for config in gen:
             temp = dict(zip(list(d_filter.keys()), deepcopy(config)))
             temp = nd.merge(d_flat,temp)
-            for itm in expand_as_generator(nd.structure(temp,configs)):
+            for itm in compile_as_generator(nd.structure(temp,configs)):
                 yield itm
 
     elif nd.find_key(configs, stitch_config) != None:
         temp_config = nd.recursive_get(configs, nd.find_key(configs, stitch_config))
         if isinstance(temp_config,dict):
-            for itm in expand_as_generator(temp_config):
+            for itm in compile_as_generator(temp_config):
                 temp = deepcopy(configs)
                 temp[stitch_config] = itm
                 yield temp
@@ -155,7 +158,7 @@ def stitch(stitch_config, configs : dict):
             for el in temp_config:
                 temp = deepcopy(configs)
                 if isinstance(el,dict):
-                    for itm in expand_as_generator(el):
+                    for itm in compile_as_generator(el):
                         temp[stitch_config] = itm
                         yield temp
                 else:

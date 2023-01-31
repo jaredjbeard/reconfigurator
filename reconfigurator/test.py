@@ -1,8 +1,8 @@
 import unittest
 
-from expand import expand_to_list, expand_as_generator
+from compiler import compile_to_list
 
-def test_expand_to_list():
+def test_compile_to_list():
     # config = {
     #     "default": {
     #         "a": [1, 2],
@@ -53,26 +53,23 @@ def test_expand_to_list():
                     "num": 2
                 }
             ],
+            "d": 1,
         },
         "a": 
         {
-            "default": {
-                "a1": 1,
-                "a2": [2,3]
-            },
+            "a1": 1,
+            "a2": [2,3],
             "stitch": ["a2", "a3"]
         },
         "b": 
         {
-            "default": {
-                "b1": [4,5],
-                "b2": [6,7]
-            },
+            "b1": [4,5],
+            "b2": [6,7],
             "stitch": [("b1", "b2")]
         },
     }
-    for el in expand_to_list(config):
+    for el in compile_to_list(config):
         print(el)
 
 if __name__ == '__main__':
-    test_expand_to_list()
+    test_compile_to_list()
