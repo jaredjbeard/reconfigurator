@@ -31,9 +31,11 @@ import argparse
 
 import nestifydict as nd
 
+import compiler
+
 RECONFIGURATOR_CONFIG_FILE = "config.json"
 
-__all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config"]
+__all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
 
 
 def replace_file(sink_file : str, source_file : str):
@@ -64,6 +66,23 @@ def merge_file(source_files : list, do_append : bool = False):
     sink_file = source_files[len(source_files)]
     params = nd.merge_all(configs, do_append)
     write_file(sink_file, params)
+
+def compile_config_file(config_file : str):
+    """
+    Compile a configuration file into a list of configurations
+
+    :param config_file: (str) location of file to compile
+    """
+    with open(RECONFIGURATOR_CONFIG_FILE, "rb") as f:
+        config = json.load(f)
+        abs_path = config["abs_path"]
+    temp_file = abs_path + config_file
+    config = read_file(temp_file)
+    config = compiler.compile_to_list(config)
+    file_ext = config_file.split(".")[-1]
+    file_name = config_file.split(".")[0]
+    config_file = abs_path + config_file + "_c" + file_ext
+    write_file(config_file, config)
 
         
 def update_file(var, val, file : str, update_all : bool = False):
@@ -114,6 +133,7 @@ def print_config_file(file : str):
     file = abs_path + file
     params = read_file(file)
     print_config(params)
+    
             
 def print_config(config : dict): 
     """
@@ -184,11 +204,12 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Reconfigurator CLI')
     parser.add_argument('-p',  '--print',   type=str, nargs = 1, help='prints configuration from specified file')
     parser.add_argument('-s',  '--set',     type=str, nargs = 1, help='Sets absolute path to specified')
-    parser.add_argument('-rs', '--reset',   type=str,            help='Reset absolute path to absolute')
+    parser.add_argument('-rs', '--reset',   type=str, nargs = 0, help='Reset absolute path to absolute')
     parser.add_argument('-r',  '--replace', type=str, nargs = 2, help='Replaces config file with another: Should specify sink_file source_file')
     parser.add_argument('-m',  '--merge',   type=str, nargs="+", help='Merges config files: Earlier files take precendence')
     parser.add_argument('-mr', '--merge-recursive',   type=str, nargs="+", help='Merges config files and iterables within them, last file will be destination')
     parser.add_argument('-u',  '--update',  type=str, nargs='+', help='Updates variables in a file: Should specify file key val key2 val2 ...')
+    parser.add_argument('-c', '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
 
     args = parser.parse_args()
     
@@ -213,5 +234,7 @@ if __name__=='__main__':
             val.append(getattr(args,"update")[i+1])
             i += 1
         update_file(val, var, getattr(args,"update")[0], True)
+    if hasattr(args, "compile"):
+        compile_config_file(getattr(args,"compile")[0])
 
 
