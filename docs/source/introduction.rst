@@ -11,8 +11,8 @@ For instance, in reinforcement learning, setting up environments and testing var
 Reconfigurator CLI
 ##################
 
-As mentioned above, the reconfigurator CLI allows us to interact with the local system. We can set we want to reference variables. 
-Suppose we have a piece of software we are developing that uses default configuration paths. By coding with the reconfigurator, we can reference the default paths with an internal configuration.
+As mentioned above, the reconfigurator CLI allows us to interact with the local system. We can set where to reference variables. 
+Suppose we have a piece of software we are developing that uses internal configuration for paths. By integrating with the reconfigurator, we can reference the defaults with this configuration.
 Then we can use the reconfigurator CLI to modify these attributes. In my case, I have configuration files for default algorithm parameters and environment scenarios. 
 By using the reconfigurator, users of my software can easily set their own configurations without needing to modify the source code. 
 Then with a quick command line call, they can use their local workspace instead of the default.
@@ -91,5 +91,6 @@ While this is a relatively example, you can see how the utility increases with t
 Sampling
 ########
 
-Under Construction
-
+Similarly, we can use the reconfigurator to sample from a set of parameters.
+This is useful for evaluating algorithms with Monte Carlo trials or hyperparameter tuning, where we want to test a set of parameters to see which one performs best.
+More information can be found in the :doc:`Markup Docs Sampling section <../markup>`.
