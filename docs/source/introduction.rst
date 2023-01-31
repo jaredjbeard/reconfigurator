@@ -91,5 +91,6 @@ While this is a relatively example, you can see how the utility increases with t
 Sampling
 ########
 
-Under Construction
-
+Similarly, we can use the reconfigurator to sample from a set of parameters.
+This is useful for evaluating algorithms with Monte Carlo trials or hyperparameter tuning, where we want to test a set of parameters to see which one performs best.
+More information can be found in the :doc:`Markup Docs Sampling section <../markup>`.
