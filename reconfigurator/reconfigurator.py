@@ -33,7 +33,7 @@ import nestifydict as nd
 
 import compiler
 
-RECONFIGURATOR_CONFIG_FILE = "config.json"
+RECONFIGURATOR_CONFIG_FILE = "config/config.json"
 
 __all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
 
