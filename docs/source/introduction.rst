@@ -21,7 +21,7 @@ Adding CLI
 **********
 
 To add reconfigurator command line interface in Linux, navigate to `/home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/reconfigurator/scripts/`.
-Then run `sh add_cli.sh`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
+Then run `bash add_cli.bash`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
 
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 

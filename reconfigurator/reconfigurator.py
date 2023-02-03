@@ -183,12 +183,12 @@ def read_file(source_file: str) -> str:
         elif file_ext == "toml":
             return toml.load(f)
 
-def write_file(sink_file: str, params: str):
+def write_file(sink_file: str, params: dict):
     """
     Writes the content to a file
 
     :param sink_file: (str) location of new to write into
-    :param params : (str) content to write
+    :param params : (dict) content to write
     """
     file_ext = sink_file.split(".")[-1]
     with open(sink_file, "w+") as f:
