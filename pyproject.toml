@@ -9,7 +9,7 @@ version = "0.1.6"
 authors = [
   { name="Jared J. Beard", email="jbeard6@mix.wvu.edu" },
 ]
-description = "The purpose of this project is to provide an interface for nested dictionaries with unknown structures"
+description = "The purpose of this project is to provide tools for writing experiments. It can be long and slow to come up with all of your parameter files, but reconfigurator makes it a breeze."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
