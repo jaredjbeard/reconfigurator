@@ -19,12 +19,10 @@ from copy import deepcopy
 
 import nestifydict as nd
 
-import sample
+from reconfigurator.sample import *
 
 __all__ = ["compile_to_list", "compile_as_generator"]
 
-RECONFIG_ARGS = ["merge", "default", "sample-control", "configs"]
-    
 def compile_to_list(config : dict):
     """
     Compiles dense configuration to get list of all sets of configurations
@@ -81,7 +79,7 @@ def push_default(default_config: dict, config : dict):
         if isinstance(config[el], dict):
             config[el] = nd.merge(default_config, config[el])
     config = nd.merge(default_config, config)
-    return sample.sample_all(s, config)
+    return sample_all(s, config)
 
 def stitch_all(stitch_configs : dict, configs : dict):
     """
