@@ -204,28 +204,28 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Reconfigurator CLI')
     parser.add_argument('-p',  '--print',   type=str, nargs = 1, help='prints configuration from specified file')
     parser.add_argument('-s',  '--set',     type=str, nargs = 1, help='Sets absolute path to specified')
-    parser.add_argument('-rs', '--reset',   type=str, nargs = 0, help='Reset absolute path to absolute')
+    parser.add_argument('-rs', '--reset',   action="store_const", const=True, help='Reset absolute path to absolute')
     parser.add_argument('-r',  '--replace', type=str, nargs = 2, help='Replaces config file with another: Should specify sink_file source_file')
     parser.add_argument('-m',  '--merge',   type=str, nargs="+", help='Merges config files: Earlier files take precendence')
     parser.add_argument('-mr', '--merge-recursive',   type=str, nargs="+", help='Merges config files and iterables within them, last file will be destination')
     parser.add_argument('-u',  '--update',  type=str, nargs='+', help='Updates variables in a file: Should specify file key val key2 val2 ...')
-    parser.add_argument('-c', '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
+    parser.add_argument('-c',  '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
 
     args = parser.parse_args()
     
-    if hasattr(args, "print"):
+    if hasattr(args, "print") and args.print is not None:
         print_config_file(getattr(args,"print")[0])
-    if hasattr(args, "setpath"):
+    if hasattr(args, "setpath") and args.setpath is not None:
         set_abs_path(getattr(args,"setpath")[0])
-    if hasattr(args, "resetpath"):
+    if hasattr(args, "reset") and args.reset:
         reset_abs_path()
-    if hasattr(args, "replace"):
+    if hasattr(args, "replace") and args.replace is not None:
         replace_file(getattr(args,"replace")[0],getattr(args,"replace")[1])
-    if hasattr(args, "merge"):
+    if hasattr(args, "merge") and args.merge is not None:
         merge_file(getattr(args,"merge"))  
-    if hasattr(args, "merge-recursive"):
+    if hasattr(args, "merge-recursive") and args.merge_recursive is not None:
         merge_file(getattr(args,"merge-recrusive"), True)  
-    if hasattr(args, "update"):
+    if hasattr(args, "update") and args.update is not None:
         val = []
         var = []
         i = 1
@@ -234,7 +234,7 @@ if __name__=='__main__':
             val.append(getattr(args,"update")[i+1])
             i += 1
         update_file(val, var, getattr(args,"update")[0], True)
-    if hasattr(args, "compile"):
+    if hasattr(args, "compile") and args.compile is not None:
         compile_config_file(getattr(args,"compile")[0])
 
 
