@@ -35,7 +35,7 @@ from reconfigurator.compiler import *
 
 RECONFIGURATOR_CONFIG_FILE = "config/config.json"
 
-__all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
+__all__ = ["replace_file", "merge_file", "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
 
 
 def replace_file(sink_file : str, source_file : str):
