@@ -31,7 +31,7 @@ import argparse
 
 import nestifydict as nd
 
-import compiler
+from reconfigurator.compiler import *
 
 RECONFIGURATOR_CONFIG_FILE = "config/config.json"
 
@@ -78,7 +78,7 @@ def compile_config_file(config_file : str):
         abs_path = config["abs_path"]
     temp_file = abs_path + config_file
     config = read_file(temp_file)
-    config = compiler.compile_to_list(config)
+    config = compile_to_list(config)
     file_ext = config_file.split(".")[-1]
     file_name = config_file.split(".")[0]
     config_file = abs_path + config_file + "_c" + file_ext
