@@ -141,7 +141,6 @@ def print_config(config : dict):
     
     :param config: (dict) Configuration params
     """
-    print("Getting Decision Making Toolbox Configuration")
     len_key = 0
     for key in config.keys():
         if len(str(key)) > len_key:
