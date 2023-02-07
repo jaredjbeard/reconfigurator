@@ -1,11 +1,11 @@
 
 [build-system]
-requires = ["setuptools>=61.0", "nestifydict"]
+requires = ["setuptools>=61.0", "nestifydict", "pyyaml", "toml", "pyyaml"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "reconfigurator"
-version = "0.1.13"
+version = "0.1.14"
 authors = [
   { name="Jared J. Beard", email="jbeard6@mix.wvu.edu" },
 ]
