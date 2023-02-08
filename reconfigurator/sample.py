@@ -71,9 +71,9 @@ def sample(sample_params : dict):
     sample params can be specified with the string key of another variable and it will be replaced with a copy of that value.
     Additionally, samples can be multi-dimensional
     
-    :params sample_params: (dict) Contains sample parameters as follows
+    :params sample_params: (dict) Contains sample parameters as follows::
         
-        *Continous sample*
+        Continous sample
         {
             "low": lower limit
             "high": upper limit
@@ -81,7 +81,7 @@ def sample(sample_params : dict):
             "num": (optional) number of times to sample
         }
         
-        *Discrete sample*
+        Discrete sample
         {
             "choice": Options to sample from
             "probability": probability to sample from
@@ -103,13 +103,15 @@ def sample_continuous(rng, params):
     Samples one or more continuous distributions
     
     :param rng: (rng) random number generator
-    :param params: (dict) params to sample dist of the form
+    :param params: (dict) params to sample dist of the form::
+    
         {
             "low": lower limit
             "high": upper limit
             "num_increments": (optional) number of increments to down sample a continuous space
             "num": (optional) number of times to sample
         }
+        
     :return: list of samples
     """       
     if "num_increments" in params:
@@ -128,12 +130,14 @@ def sample_discrete(rng, params):
     Samples one or more discrete distributions
     
     :param rng: (rng) random number generator
-    :param params: (dict) params to sample dist of the form
+    :param params: (dict) params to sample dist of the form::
+    
         {
             "choice": Options to sample from
             "probability": probability to sample from
             "num": (optional) number of times to sample
         }
+        
     :return: list of samples
     """
     num = params["num"] if "num" in params else None
