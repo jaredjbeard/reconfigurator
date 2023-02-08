@@ -4,4 +4,5 @@ nestifydict==0.0.9
 toml
 pyyaml
 traitlets
+numpy
 -e.
