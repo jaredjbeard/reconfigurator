@@ -10,7 +10,7 @@ Markup modules
 Sample
 ******
 
-.. automodule:: reconfigurator.sample
+.. automodule:: sample
    :members:
    :undoc-members:
    :show-inheritance:
@@ -19,7 +19,7 @@ Sample
 Compiler
 ********
 
-.. automodule:: reconfigurator.compiler
+.. automodule:: compiler
    :members:
    :undoc-members:
    :show-inheritance:
@@ -29,7 +29,7 @@ Compiler
 Reconfigurator CLI module
 -------------------------
 
-.. automodule:: reconfigurator.reconfigurator
+.. automodule:: reconfigurator
    :members:
    :undoc-members:
    :show-inheritance:
