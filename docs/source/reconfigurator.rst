@@ -18,7 +18,7 @@ Markup modules
 Compiler
 ********
 
-.. automodule:: compiler
+.. automodule:: reconfigurator.compiler
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,7 +28,7 @@ Compiler
 Sample
 ******
 
-.. automodule:: sample
+.. automodule:: reconfigurator.sample
    :members:
    :undoc-members:
    :show-inheritance:
