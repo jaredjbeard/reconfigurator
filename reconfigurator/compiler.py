@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 This script contains functions for compiling a dense configuration file into a list of configurations.
 """
@@ -19,7 +19,7 @@ from copy import deepcopy
 
 import nestifydict as nd
 
-from reconfigurator.sample import *
+from sample import *
 
 __all__ = ["compile_to_list", "compile_as_generator"]
 

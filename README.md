@@ -14,7 +14,7 @@ Citation
 If you are using this in your work, please cite as
 
 ```
-@misc{beard2022irl_gym,
+@misc{beard2022reconfigurator,
     author = {Beard, Jared J.},
     title = {reconfigurator: A tool for configuration files},
     year = {2022},

@@ -1,15 +1,16 @@
 .. _markup:
+
 =====================
 Reconfigurator Markup
 =====================
 
 Reconfigurator is a tool for setting up and modify configuration files.
 It has support for the following:
-    - grouping together configurations of multiple modules,
-    - setting default configurations and modification through both an API and command line interface,
-    - a dense markdown for easily setting configurations or compressing data.
-    - sampling configurations when used to set up experiments, and
-    - setting default parameters.
+- grouping together configurations of multiple modules,
+- setting default configurations and modification through both an API and command line interface,
+- a dense markdown for easily setting configurations or compressing data.
+- sampling configurations when used to set up experiments, and
+- setting default parameters.
 
 On terminology, please note a *group* is a type of configuration, and a *configuration* is a set of parameters.
 
@@ -40,12 +41,12 @@ Stitching
 Stitching is the process of combining configurations from different groups. 
 To define a stitch, users must include a key called stitch which contains the name of variables we want to stitch/compose into a set of configurations.
 Stitch will be parse as follows:
-    - a tuple: stitch variables as the component product (combination of the elements in the variable)
-    - a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
-    - a key: parse variable sequentially. If the values contained in the member 
-        - a dict: elements will be expanded as a normal
-        - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
-        - any other type: elements will be returned as is 
+- a tuple: stitch variables as the component product (combination of the elements in the variable)
+- a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
+- a key: parse variable sequentially. If the values contained in the member 
+    - a dict: elements will be expanded as a normal
+    - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
+    - any other type: elements will be returned as is 
 
 What's more, pairwise and product stitching can be combined by nesting stitch commands within dictionaries.
 This is useful when you need to share some variables across trials, but also want to vary some others.

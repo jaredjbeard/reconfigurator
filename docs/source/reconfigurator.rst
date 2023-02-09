@@ -4,17 +4,18 @@ Reconfigurator
 Submodules
 ----------
 
-Reconfigurator CLI module
--------------------------
-
-.. automodule:: reconfigurator
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Markup modules
 --------------
 
+Sample
+******
+
+.. automodule:: sample
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   
+   
 Compiler
 ********
 
@@ -22,13 +23,13 @@ Compiler
    :members:
    :undoc-members:
    :show-inheritance:
+   
+   
+   
+Reconfigurator CLI module
+-------------------------
 
-
-
-Sample
-******
-
-.. automodule:: sample
+.. automodule:: reconfigurator
    :members:
    :undoc-members:
    :show-inheritance:

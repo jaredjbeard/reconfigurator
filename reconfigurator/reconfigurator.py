@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 ==============
 Reconfigurator
@@ -31,19 +31,11 @@ import argparse
 
 import nestifydict as nd
 
-<<<<<<< HEAD
-import compiler
-
-RECONFIGURATOR_CONFIG_FILE = "config.json"
-
-__all__ = ["replace_file", "merge_file" "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
-=======
-from reconfigurator.compiler import *
+from compiler import *
 
 RECONFIGURATOR_CONFIG_FILE = "config/config.json"
 
 __all__ = ["replace_file", "merge_file", "update_file", "update", "print_config_file", "print_config", "compile_config_file"]
->>>>>>> main
 
 
 def replace_file(sink_file : str, source_file : str):
@@ -86,11 +78,7 @@ def compile_config_file(config_file : str):
         abs_path = config["abs_path"]
     temp_file = abs_path + config_file
     config = read_file(temp_file)
-<<<<<<< HEAD
-    config = compiler.compile_to_list(config)
-=======
     config = compile_to_list(config)
->>>>>>> main
     file_ext = config_file.split(".")[-1]
     file_name = config_file.split(".")[0]
     config_file = abs_path + config_file + "_c" + file_ext
@@ -153,7 +141,6 @@ def print_config(config : dict):
     
     :param config: (dict) Configuration params
     """
-    print("Getting Decision Making Toolbox Configuration")
     len_key = 0
     for key in config.keys():
         if len(str(key)) > len_key:
@@ -216,20 +203,12 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser(description='Reconfigurator CLI')
     parser.add_argument('-p',  '--print',   type=str, nargs = 1, help='prints configuration from specified file')
     parser.add_argument('-s',  '--set',     type=str, nargs = 1, help='Sets absolute path to specified')
-<<<<<<< HEAD
-    parser.add_argument('-rs', '--reset',   type=str, nargs = 0, help='Reset absolute path to absolute')
-=======
     parser.add_argument('-rs', '--reset',   action="store_const", const=True, help='Reset absolute path to absolute')
->>>>>>> main
     parser.add_argument('-r',  '--replace', type=str, nargs = 2, help='Replaces config file with another: Should specify sink_file source_file')
     parser.add_argument('-m',  '--merge',   type=str, nargs="+", help='Merges config files: Earlier files take precendence')
     parser.add_argument('-mr', '--merge-recursive',   type=str, nargs="+", help='Merges config files and iterables within them, last file will be destination')
     parser.add_argument('-u',  '--update',  type=str, nargs='+', help='Updates variables in a file: Should specify file key val key2 val2 ...')
-<<<<<<< HEAD
-    parser.add_argument('-c', '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
-=======
     parser.add_argument('-c',  '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
->>>>>>> main
 
     args = parser.parse_args()
     
@@ -254,11 +233,7 @@ if __name__=='__main__':
             val.append(getattr(args,"update")[i+1])
             i += 1
         update_file(val, var, getattr(args,"update")[0], True)
-<<<<<<< HEAD
-    if hasattr(args, "compile"):
-=======
     if hasattr(args, "compile") and args.compile is not None:
->>>>>>> main
         compile_config_file(getattr(args,"compile")[0])
 
 
