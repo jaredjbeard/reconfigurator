@@ -20,8 +20,7 @@ Then with a quick command line call, they can use their local workspace instead 
 Adding CLI
 **********
 
-To add reconfigurator command line interface in Linux, navigate to `/home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/`.
-Then run `bash scripts/add_cli.bash`. **BE SURE TO RUN THIS FROM THE RECONFIGURATOR FOLDER OR THE PATHS WE BE WRONG** (I intend to simplify the install process in the future). This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
+To add reconfigurator command line interface in Linux, navigate to `bash /home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/scripts/add_cli.bash`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
 
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 
