@@ -41,8 +41,8 @@ Stitching
 Stitching is the process of combining configurations from different groups. 
 To define a stitch, users must include a key called stitch which contains the name of variables we want to stitch/compose into a set of configurations.
 Stitch will be parse as follows:
-- a tuple: stitch variables as the component product (combination of the elements in the variable)
-- a list: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
+- {"combo": [<keys>]}: stitch variables as the component product (combination of the elements in the variable)
+- {"pair": [<keys>]}: stitch variables in a pairwise fashion (they will be matched one-to-one for each value in the variables which must be of the same length)
 - a key: parse variable sequentially. If the values contained in the member 
     - a dict: elements will be expanded as a normal
     - any other iterable: elements will be parse sequentially then be returned (or if dict, expanded)
@@ -60,7 +60,7 @@ Product Example
 Start with the configuration::
 
     {
-        stitch : [ ( "a", "b" ) ],
+        stitch : [ {"combo" : ["a", "b"]} ],
         "a" : [1, 2],
         "b' : [4, 5]
     }
@@ -93,7 +93,7 @@ Pairwise Example
 Start with the configuration::
 
     {
-        stitch : [ ["a", "b"] ],
+        stitch : [ {"pair: ["a", "b"]} ],
         "a" : [1, 2],
         "b' : [4, 5]
     }
@@ -151,7 +151,7 @@ Dictionary
 Start with the configuration::
 
     {
-        stitch : [ ( "a", "b" ) ],
+        stitch : [ {"combo" : ["a", "b"]} ],
         "a" : 
             { "stitch" : ["c"],
                 "c" : [1, 2]

@@ -6,13 +6,13 @@ if ! test -d "bin/"; then
     mkdir bin
 fi
 
-chmod +x reconfigurator.py
+chmod +x $parent/reconfigurator.py
 
-save_loc=bin/reconfigurator
+save_loc=$parent/bin/reconfigurator
 if test -f "$save_loc"; then
     rm "$save_loc"
 fi
-ln -s ../reconfigurator.py $save_loc
+ln -s $parent/reconfigurator.py $save_loc
     
 export_path='export PATH="$PATH:parent/bin/"'
 export_path=${export_path/parent/$parent}
@@ -25,5 +25,3 @@ echo $export_path >> ~/.bashrc
 source ~/.bashrc
 
 echo "Reconfigurator CLI added!"
-
-

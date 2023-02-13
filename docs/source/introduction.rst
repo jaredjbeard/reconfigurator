@@ -17,11 +17,24 @@ Then we can use the reconfigurator CLI to modify these attributes. In my case, I
 By using the reconfigurator, users of my software can easily set their own configurations without needing to modify the source code. 
 Then with a quick command line call, they can use their local workspace instead of the default.
 
+CLI Commands:
+*************
+
+The following flags are available for the reconfigurator CLI:
+- -p or --print_file: prints the configuration from the specified file
+- -s or --set: sets the absolute path to the specified file
+- -rs or --reset: resets the absolute path to the default
+- -r or --replace: replaces the specified file with another
+- -m or --merge: merges the specified files
+- -mr or --merge_recursive: merges the specified files and iterables within them
+- -u or --update: updates variables in a file
+- -c or --compile: compiles a configuration
+- -cp or --compile_print: compiles and prints a configuration
+
 Adding CLI
 **********
 
-To add reconfigurator command line interface in Linux, navigate to `/home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/`.
-Then run `bash scripts/add_cli.bash`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
+To add reconfigurator command line interface in Linux, run `bash /home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/scripts/add_cli.bash`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
 
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 
@@ -43,7 +56,7 @@ I have a set of parameters for the agent and the environment. I want to run 10 t
 So I write dense markdown as::
 
     {
-        "stitch" : [("x_dim", "y_dim")],
+        "stitch" : [{"combo": ["x_dim", "y_dim"]}],
         "x_dim" : [10, 20, 30, 40, 50],
         "y_dim" : [15, 25, 35, 45, 55],
         "n_copies" : 10
