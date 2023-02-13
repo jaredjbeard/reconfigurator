@@ -21,7 +21,7 @@ Adding CLI
 **********
 
 To add reconfigurator command line interface in Linux, navigate to `/home/<user>/.local/lib/python<version#>/site-packages/reconfigurator/`.
-Then run `bash scripts/add_cli.bash`. This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
+Then run `bash scripts/add_cli.bash`. **BE SURE TO RUN THIS FROM THE RECONFIGURATOR FOLDER OR THE PATHS WE BE WRONG** (I intend to simplify the install process in the future). This will add the reconfigurator CLI to your path. (in the future we may seek to add this at install time).
 
 The reconfigurator can be accessed using `reconfigurator <flag> <args>`. Use `man reconfigurator` for more information.
 
@@ -43,7 +43,7 @@ I have a set of parameters for the agent and the environment. I want to run 10 t
 So I write dense markdown as::
 
     {
-        "stitch" : [("x_dim", "y_dim")],
+        "stitch" : [{"combo": ["x_dim", "y_dim"]}],
         "x_dim" : [10, 20, 30, 40, 50],
         "y_dim" : [15, 25, 35, 45, 55],
         "n_copies" : 10

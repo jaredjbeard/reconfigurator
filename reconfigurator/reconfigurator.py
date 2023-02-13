@@ -66,6 +66,7 @@ def merge_file(source_files : list, do_append : bool = False):
     sink_file = source_files[len(source_files)]
     params = nd.merge_all(configs, do_append)
     write_file(sink_file, params)
+    return params
 
 def compile_config_file(config_file : str):
     """
@@ -210,6 +211,8 @@ if __name__=='__main__':
     parser.add_argument('-mr', '--merge_recursive',   type=str, nargs="+", help='Merges config files and iterables within them, last file will be destination')
     parser.add_argument('-u',  '--update',  type=str, nargs='+', help='Updates variables in a file: Should specify file key val key2 val2 ...')
     parser.add_argument('-c',  '--compile',  type=str, nargs = 1, help='Compiles a configuration: Should specify file')
+    parser.add_argument('-cp', '--compile_print',   action="store_const", const=True, help='Compiles and prints a configuration: Should specify file')
+
 
     args = parser.parse_args()
     
@@ -236,5 +239,8 @@ if __name__=='__main__':
         update_file(val, var, getattr(args,"update")[0], True)
     if hasattr(args, "compile") and args.compile is not None:
         compile_config_file(getattr(args,"compile")[0])
+    if hasattr(args, "compile_print") and args.compile_print:
+        config = compile_config_file(getattr(args,"compile")[0], True)
+        print_config(config)
 
 

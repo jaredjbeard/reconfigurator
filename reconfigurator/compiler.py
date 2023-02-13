@@ -110,10 +110,14 @@ def stitch(stitch_config, configs : dict):
     :param config: (dict) dense configuration
     :return: yields all combinations. 
     """
-    if isinstance(stitch_config,tuple) or isinstance(stitch_config,list):
+    if isinstance(stitch_config,dict) and ("combo" in stitch_config or "pair" in stitch_config):
         d_filter = {}
 
-        for el in stitch_config:
+        type_key = "combo"
+        if "pair" in stitch_config:
+            type_key = "pair"
+
+        for el in stitch_config[type_key]:
             key = nd.find_key(configs,el)
             if key != None:
                 temp_dict = nd.recursive_get(configs, key)
@@ -122,18 +126,18 @@ def stitch(stitch_config, configs : dict):
 
         d_flat = nd.unstructure(configs)
         
-        for el in stitch_config:
+        for el in stitch_config[type_key]:
             if el in d_flat:
                 d_filter[el] = d_flat[el]
 
         d_flat = nd.unstructure(configs)
         d_filter = {}
-        for el in stitch_config:
+        for el in stitch_config[type_key]:
             d_filter[el] = d_flat[el]
             if not isinstance(d_filter[el], list):
                     d_filter[el] = [d_filter[el]]
 
-        if isinstance(stitch_config,tuple):
+        if type_key == "combo":
             gen = itertools.product(*d_filter.values())
         else:
             gen = pairwise(list(d_filter.values()))
