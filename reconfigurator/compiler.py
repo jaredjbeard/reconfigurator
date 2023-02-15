@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 This script contains functions for compiling a dense configuration file into a list of configurations.
 """

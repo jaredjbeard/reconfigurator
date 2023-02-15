@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 This script is samples a set of variables and adds them to a configuration file
 """
