@@ -1,3 +1,3 @@
-from reconfigurator.reconfigurator import *
-from reconfigurator.compiler import *
-from reconfigurator.sample import *
+from . import reconfigurator
+from . import compiler
+from . import sample
