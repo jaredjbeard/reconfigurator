@@ -18,10 +18,10 @@ from copy import deepcopy
 
 import nestifydict as nd
 
-from sample import *
+from .sample import *
 
 __all__ = ["compile_to_list", "compile_as_generator"]
-    
+
 def compile_to_list(config : dict):
     """
     Compiles dense configuration to get list of all sets of configurations
