@@ -31,7 +31,7 @@ import argparse
 
 import nestifydict as nd
 
-from compiler import *
+from .compiler import *
 
 RECONFIGURATOR_CONFIG_FILE = "/config/config.json"
 
