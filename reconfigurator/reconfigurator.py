@@ -70,6 +70,9 @@ def merge_file(source_files : list, do_append : bool = False):
     print(source_files)
     sink_file = source_files[len(source_files)-1]
     params = nd.merge_all(configs, do_append)
+    file_ext = sink_file.split(".")[-1]
+    file_name = sink_file.split(".")[0]
+    sink_file = file_name + "_m." + file_ext
     write_file(sink_file, params)
     return params
 
