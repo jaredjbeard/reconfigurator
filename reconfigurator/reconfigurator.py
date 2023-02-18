@@ -232,10 +232,9 @@ if __name__=='__main__':
     if hasattr(args, "replace") and args.replace is not None:
         replace_file(getattr(args,"replace")[0],getattr(args,"replace")[1])
     if hasattr(args, "merge") and args.merge is not None:
-        print(getattr(args,"merge"))
         merge_file(getattr(args,"merge"))  
     if hasattr(args, "merge_recursive") and args.merge_recursive is not None:
-        merge_file(getattr(args,"merge_recrusive"), True)  
+        merge_file(getattr(args,"merge_recursive"), True)  
     if hasattr(args, "update") and args.update is not None:
         val = []
         var = []
