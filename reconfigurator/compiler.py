@@ -18,7 +18,10 @@ from copy import deepcopy
 
 import nestifydict as nd
 
-from .sample import *
+try:
+     from .sample import *
+except:
+     from sample import *
 
 __all__ = ["compile_to_list", "compile_as_generator"]
 
