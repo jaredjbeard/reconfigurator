@@ -65,8 +65,7 @@ def merge_file(source_files : list, do_append : bool = False):
     """
     configs = []
     for fp in source_files:
-        pass
-        # configs.append(read_file(fp))
+        configs.append(read_file(fp))
     print(source_files)
     sink_file = source_files[len(source_files)-1]
     params = nd.merge_all(configs, do_append)
