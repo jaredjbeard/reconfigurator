@@ -66,8 +66,12 @@ def merge_file(source_files : list, do_append : bool = False):
     configs = []
     for fp in source_files:
         configs.append(read_file(fp))
-    sink_file = source_files[len(source_files)]
+    print(source_files)
+    sink_file = source_files[len(source_files)-1]
     params = nd.merge_all(configs, do_append)
+    file_ext = sink_file.split(".")[-1]
+    file_name = sink_file.split(".")[0]
+    sink_file = file_name + "_m." + file_ext
     write_file(sink_file, params)
     return params
 
@@ -228,6 +232,7 @@ if __name__=='__main__':
     if hasattr(args, "replace") and args.replace is not None:
         replace_file(getattr(args,"replace")[0],getattr(args,"replace")[1])
     if hasattr(args, "merge") and args.merge is not None:
+        print(getattr(args,"merge"))
         merge_file(getattr(args,"merge"))  
     if hasattr(args, "merge_recursive") and args.merge_recursive is not None:
         merge_file(getattr(args,"merge_recrusive"), True)  
