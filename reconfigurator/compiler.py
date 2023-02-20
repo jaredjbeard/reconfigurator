@@ -33,7 +33,17 @@ def compile_to_list(config : dict):
     :return: (list) all configurations captured
     """
     return list(compile_as_generator(config))
+
+def compile_from_list(configs : list):
+    """
+    Compiles dense configuration to get list of all sets of configurations
     
+    :param config: (list) dense configuration file
+    :return: (list) all configurations captured
+    """
+    for el in configs:
+        for itm in compile_as_generator(el):
+            yield itm
 
 def compile_as_generator(config : dict):
     """
@@ -122,9 +132,11 @@ def stitch(stitch_config, configs : dict):
         for el in stitch_config[type_key]:
             key = nd.find_key(configs,el)
             if key != None:
-                temp_dict = nd.recursive_get(configs, key)
-                if isinstance(temp_dict, dict):
-                    nd.recursive_set(configs, key, compile_to_list(temp_dict))
+                temp = nd.recursive_get(configs, key)
+                if isinstance(temp, dict):
+                    temp = [temp]
+                if isinstance(temp, list) and len(temp) > 0 and isinstance(temp[0], dict):
+                    nd.recursive_set(configs, key, list(compile_from_list(temp)))
 
         d_flat = nd.unstructure(configs)
         

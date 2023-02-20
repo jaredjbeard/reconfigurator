@@ -18,6 +18,8 @@ import json
 import numpy as np
 from numpy import random
 
+from collections.abc import Iterable
+
 import nestifydict as nd
 
 __all__ = ["from_file_to_file", "sample", "sample_all"]
@@ -51,6 +53,7 @@ def sample_all(sample_config : dict, output : dict):
     :param sample_config: (dict) Sample configuration
     :param output: (dict) Where to add samples
     """
+
     for i, el in enumerate(sample_config):
         # Replace references
         for param in el:
@@ -107,23 +110,103 @@ def sample_continuous(rng, params):
         {
             "low": lower limit
             "high": upper limit
-            "num_increments": (optional) number of increments to down sample a continuous space
+            "num_increments": (optional) number of increments to down sample a continuous space (+1 will use unit increments)
             "num": (optional) number of times to sample
         }
         
     :return: list of samples
-    """       
-    if "num_increments" in params:
-        temp = {}
-        if "num" in params:
-            temp["num"] = params["num"]
-        temp["choice"] = np.linspace(params["low"], params["high"], params["num_increments"])
-        return sample_discrete(rng,temp)
+    """    
+    if "num" not in params:
+        params["num"] = 1   
+    if "num_increments" in params and params["num_increments"] is not None:
+        if isinstance(params["num_increments"], str) and params["num_increments"] == "+1":
+            params["num_increments"] = recursive_increment(params)
+        if not isinstance(params["num_increments"], Iterable):
+            params["num_increments"] = recursive_update(params)
+        samples = []
+        num = params["num"]
+        del params["num"]
+        for i in range(num):
+            samples.append(recursive_discrete(rng, params))
+        return samples
     else:
         num = params["num"] if "num" in params else None
         vals = rng.random(num)
         return list((np.asarray(params["high"])-np.asarray(params["low"]))*vals + np.asarray(params["low"]))
+
+def recursive_increment(params):
+    """
+    Recursively sets the increments for a continuous space to unit increments
     
+    :param params: (dict) params to sample dist of the form::
+    
+        {
+            "low": lower limit
+            "high": upper limit
+        }
+    """
+    incs = []
+    for i in range(len(params["low"])):
+        if isinstance(params["low"][i], Iterable):
+            temp = []
+            for j in range(len(params["low"][i])):
+                temp.append(recursive_increment({"low": params["low"][i], "high": params["high"][i]}))
+            incs.append(temp)
+        else:
+            incs.append(params["high"][i]-params["low"][i]+1)
+    return incs
+
+def recursive_update(params):
+    """
+    Recursively sets the increments for a continuous space to unit increments
+    
+    :param params: (dict) params to sample dist of the form::
+    
+        {
+            
+            "low": lower limit
+            "high": upper limit
+        }
+    """
+    incs = []
+    for i in range(len(params["low"])):
+        if isinstance(params["low"][i], Iterable):
+            temp = []
+            for j in range(len(params["low"][i])):
+                temp.append(recursive_update({"low": params["low"][i], "high": params["high"][i], "num_increments": params["num_increments"]}))
+            incs.append(temp)
+        else:
+            incs.append(params["num_increments"])
+    return incs
+
+def recursive_discrete(rng, params):
+    """
+    Resursively samples discrete distributions
+    
+    :param rng: (rng) random number generator
+    :param params: (dict) params to sample dist of the form::
+    
+        {
+            "low": lower limit
+            "high": upper limit
+            "num_increments": (optional) number of increments to down sample a continuous space
+            "num": (optional) number of times to sample
+        }
+    :return: list of samples
+    """
+    sample = []
+    for i in range(len(params["low"])):
+        if isinstance(params["low"][i], Iterable):
+            temp = []
+            for j in range(len(params["low"][i])):
+                temp.append(recursive_increment({"low": params["low"][i], "high": params["high"][i], "num_increments": params["num_increments"][i]}))
+            sample.append(temp)
+        else:
+            temp = {"num": 1}
+            temp["choice"] = np.linspace(params["low"][i], params["high"][i], params["num_increments"][i])
+            sample.append(sample_discrete(rng,temp))
+    return sample        
+
 def sample_discrete(rng, params):
     """
     Samples one or more discrete distributions
