@@ -123,9 +123,12 @@ def sample_continuous(rng, params):
             params["num_increments"] = recursive_increment(params)
         if not isinstance(params["num_increments"], Iterable):
             params["num_increments"] = recursive_update(params)
-        samples = []
+        
         num = params["num"]
         del params["num"]
+        samples = []
+        if num == 1:
+            return recursive_discrete(rng, params)
         for i in range(num):
             samples.append(recursive_discrete(rng, params))
         return samples
@@ -204,7 +207,7 @@ def recursive_discrete(rng, params):
         else:
             temp = {"num": 1}
             temp["choice"] = np.linspace(params["low"][i], params["high"][i], params["num_increments"][i])
-            sample.append(sample_discrete(rng,temp))
+            sample.append(sample_discrete(rng,temp)[0])
     return sample        
 
 def sample_discrete(rng, params):

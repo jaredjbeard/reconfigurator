@@ -90,6 +90,10 @@ def push_default(default_config: dict, config : dict):
     for el in config:
         if isinstance(config[el], dict):
             config[el] = nd.merge(default_config, config[el])
+        elif isinstance(config[el], list):
+            for i in range(len(config[el])):
+                if isinstance(config[el][i], dict):
+                    config[el][i] = nd.merge(default_config, config[el][i])
     config = nd.merge(default_config, config)
     return sample_all(s, config)
 
